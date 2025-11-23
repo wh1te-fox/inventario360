@@ -8,89 +8,480 @@
   A continuación se cargan con @import para facilitar mantenimiento.
 ============================================================== */
 
-/* === Sección 10: Controles de movimientos === */
-  .movimientos-controles {
+/* === Sección 10: Movimientos === */
+/* Tarjeta contenedora del módulo de movimientos */
+.movimientos-card {
+  background: linear-gradient(180deg,#ffffff 0%, #f7f4ff 100%); /* Fondo degradado suave */
+  border-radius: 32px; /* Bordes amplios para look premium */
+  border: 2px solid rgba(77,55,166,0.2); /* Borde púrpura translúcido */
+  box-shadow: 0 18px 40px rgba(49,25,109,0.12); /* Sombra profunda */
+  padding: 28px; /* Espacio interior generoso */
+  display: flex; /* Permite apilar secciones */
+  flex-direction: column; /* Orden vertical */
+  gap: 18px; /* Separación uniforme */
+}
+
+/* Contenedor sticky que agrupa cabecera, filtros y chips */
+.movimientos-header-sticky {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg,#ffffff 0%, rgba(255,255,255,0));
+  padding-bottom: 4px;
+  z-index: 2;
+}
+
+/* Hero principal con título y resumen financiero */
+.movimientos-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.movimientos-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.movimientos-tagline {
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #998fd1;
+  margin: 0;
+}
+
+.movimientos-hero h2 {
+  font-size: 2.1rem;
+  margin: 0;
+  color: #33235f;
+}
+
+.mov-vista-actual {
+  font-size: 0.9rem;
+  color: #4d2ed1;
+  background: rgba(77,46,209,0.12);
+  border-radius: 999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  width: fit-content;
+}
+
+.movimientos-hero-summary {
+  display: flex;
+  gap: 14px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(77,55,166,0.22);
+  border-radius: 20px;
+  padding: 12px 18px;
+}
+
+.mov-resumen-item {
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mov-resumen-item span {
+  font-size: 0.8rem;
+  color: #7265a5;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mov-resumen-item strong {
+  font-size: 1.35rem;
+  color: #2e2161;
+}
+
+/* Barra de herramientas con chips de rango y buscador */
+.movimientos-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.mov-toolbar-left,
+.mov-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mov-toolbar-left {
+  flex: 1 1 320px;
+}
+
+.mov-toolbar-right {
+  justify-content: flex-end;
+  flex: 1 1 200px;
+}
+
+.mov-pill-chip-group {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.mov-chip {
+  border-radius: 999px;
+  border: 2px solid #d8ccff;
+  background: #fff;
+  color: #4d2ed1;
+  font-weight: 600;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mov-chip--solid {
+  background: #4d2ed1;
+  color: #fff;
+  border-color: #4d2ed1;
+  box-shadow: 0 6px 14px rgba(77,46,209,0.28);
+}
+
+.mov-chip--icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mov-search-box {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #d8ccff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.95);
+  min-width: 260px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65);
+}
+
+.mov-search-icon {
+  margin-right: 8px;
+  font-size: 1.1rem;
+  color: #9388c5;
+}
+
+.mov-search-box input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 0.95rem;
+  background: transparent;
+  color: #2f2159;
+}
+
+.mov-search-clear {
+  border: none;
+  background: transparent;
+  font-size: 1.3rem;
+  color: #b2a7da;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* Filas de filtros rápidos (Ingresos/Egresos/etc.) */
+.mov-pill-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mov-pill {
+  border-radius: 999px;
+  padding: 8px 18px;
+  border: 1px solid rgba(77,55,166,0.25);
+  background: rgba(255,255,255,0.9);
+  color: #4d2ed1;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mov-pill.active {
+  background: #4d2ed1;
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(77,46,209,0.2);
+}
+
+/* Contenedor de la tabla principal */
+.movimientos-tabla-wrapper {
+  flex: 1; /* Ocupar todo el espacio disponible */
+  border: 2px solid rgba(77,55,166,0.2); /* Marco lila */
+  border-radius: 26px; /* Bordes suavizados */
+  background: #fff; /* Fondo neutro */
+  display: flex; /* Header y scroll apilados */
+  flex-direction: column;
+  overflow: hidden; /* Oculta desbordes en la cabecera */
+  max-height: min(520px, 55vh); /* Mantiene fija la altura y permite que sólo la tabla haga scroll */
+}
+
+/* Área que hace scroll dentro de la tabla */
+.movimientos-tabla-scroll {
+  flex: 1;
+  overflow-y: auto;
+  max-height: inherit; /* Hereda la altura del wrapper para contener el scroll */
+}
+
+/* Tabla de movimientos */
+.movimientos-tabla-scroll table {
+  width: 100%;
+  border-collapse: separate; /* Permite sticky header con sombras */
+  border-spacing: 0;
+}
+
+/* Encabezados fijos */
+.movimientos-tabla-scroll th {
+  position: sticky;
+  top: 0;
+  background: #e4e8ff; /* Azul claro */
+  color: #2e2161;
+  padding: 14px 10px;
+  text-transform: capitalize; /* Estilo en mayúscula inicial */
+  border-bottom: 2px solid rgba(77,55,166,0.4);
+}
+
+/* Celdas del cuerpo de la tabla */
+.movimientos-tabla-scroll td {
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(77,55,166,0.12);
+  color: #3a3268;
+}
+
+/* Primera columna alineada a la izquierda */
+.movimientos-tabla-scroll td:first-child {
+  text-align: left;
+}
+
+/* Fila de resumen de periodo */
+.mov-periodo-row td {
+  background: rgba(205, 196, 255, 0.25);
+  font-weight: 600;
+  color: #3a2c73;
+  text-align: left;
+}
+
+/* Texto resumen debajo de la tabla */
+.mov-periodo-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 0.9rem;
+}
+
+/* Valores destacados en el resumen */
+.mov-periodo-resumen strong {
+  color: #2e2161;
+}
+
+/* Esconde selects nativos cuando se reemplazan por chips */
+.mov-hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+}
+
+.mov-hidden-input + select,
+.mov-hidden-input + input {
+  margin-left: -9999px;
+}
+
+@media (max-width: 1024px) {
+  .movimientos-card {
+    max-height: none; /* Deja que el card crezca según contenido */
+  }
+  .movimientos-header-sticky {
+    position: static; /* Quita el comportamiento sticky en pantallas chicas */
+  }
+  .movimientos-hero {
+    flex-direction: column; /* Título encima del resumen */
+    align-items: flex-start; /* Alinea al inicio */
+  }
+  .movimientos-hero-summary {
+    width: 100%; /* Resumen ocupa todo el ancho */
+    flex-wrap: wrap; /* Permite varias filas */
+  }
+}
+
+@media (max-width: 640px) {
+  .mov-search-box {
+    width: 100%; /* Buscador se adapta al ancho */
+    min-width: unset; /* Quita el mínimo para que quepa */
+  }
+  .movimientos-tabla-wrapper {
+    overflow-x: auto; /* Permite scroll horizontal si las columnas no caben */
+  }
 }
 
 /* === Componentes reutilizables: Modales === */
 .modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
+  display: none; /* Se muestra sólo cuando se activa */
+  position: fixed; /* Cubre toda la ventana */
+  z-index: 1000; /* Se superpone a todo */
   left: 0; top: 0;
   width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.6); /* Fondo oscuro translúcido */
 }
 
 .modal-contenido {
-  background: var(--surface);
-  margin: 6% auto;
+  background: var(--surface); /* Fondo blanco consistente */
+  margin: 6% auto; /* Centrado con margen superior */
   padding: 22px;
-  width: 520px;
-  max-width: calc(100% - 40px);
-  border-radius: 14px;
-  box-shadow: 0 10px 30px var(--shadow);
+  width: 520px; /* Ancho estándar */
+  max-width: calc(100% - 40px); /* Respeta márgenes en móviles */
+  border-radius: 14px; /* Bordes suaves */
+  box-shadow: 0 10px 30px var(--shadow); /* Sombra envolvente */
   color: var(--color-text);
   font-family: var(--font-ui);
 }
-.modal-contenido h3 { font-family: var(--font-heading); margin:0 0 8px 0; color:var(--color-primary); font-size:20px }
-.modal-form-row{ display:flex; gap:12px; margin-bottom:12px }
-.modal-form-row .col{ flex:1 }
-.modal-form-control{ display:block }
+.modal-contenido h3 {
+  font-family: var(--font-heading); /* Usa la serif para títulos */
+  margin:0 0 8px 0; /* Espacio inferior */
+  color:var(--color-primary);
+  font-size:20px;
+}
+.modal-form-row{
+  display:flex; /* Inputs en fila */
+  gap:12px;
+  margin-bottom:12px;
+}
+.modal-form-row .col{
+  flex:1; /* Columnas se reparten el ancho */
+}
+.modal-form-control{
+  display:block; /* Garantiza que el input ocupe toda la columna */
+}
 .modal .cerrar{
-  color:var(--color-muted);
-  font-size:22px;
+  color:var(--color-muted); /* Ícono gris */
+  font-size:22px; /* Tamaño del icono X */
   background: transparent;
   border: none;
   padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
-  float: right;
+  float: right; /* Alinea el botón al borde */
 }
-.modal .cerrar:focus{ outline: 2px solid rgba(155,89,255,0.25) }
+.modal .cerrar:focus{
+  outline: 2px solid rgba(155,89,255,0.25); /* Resalta accesibilidad */
+}
 
-.modal form button{ margin-top:10px }
+.modal form button{
+  margin-top:10px; /* Separación respecto al último campo */
+}
 
 /* Cabeceras y componentes específicos que aún no tienen módulo propio */
-.blur { filter: blur(4px); }
+.blur {
+  filter: blur(4px); /* Efecto desenfoque cuando hay modal abierto */
+}
 .modal .modal-content {
   background: #fff;
-  width: min(640px, 92vw);
-  max-height: 80vh;
-  overflow: auto;
+  width: min(640px, 92vw); /* Limita el ancho para no desbordar */
+  max-height: 80vh; /* Evita sobrepasar la pantalla */
+  overflow: auto; /* Permite scroll interno */
   border-radius: 10px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.25);
   padding: 16px;
 }
 /* === Sección 11: Tarjetas y tablas de Estadísticas === */
 /* --- Maquetado mockup Nov 2025 (paleta violeta/azul) --- */
+.modulo--full {
+  display: flex; /* Contiene bloques altos en columna */
+  flex-direction: column;
+  min-height: calc(100vh - 80px); /* Asegura cubir casi todo el viewport */
+}
+
+.contenido .modulo--full {
+  margin: -40px; /* Extiende el módulo para abrazar bordes */
+}
+
+.modulo--full .stats-card {
+  flex: 1; /* Tarjeta ocupa todo el alto disponible */
+  height: 100%;
+  max-height: none;
+}
+
+@media (max-width: 1280px) {
+  .contenido .modulo--full {
+    margin: -32px; /* Reduce el negativo en pantallas medias */
+  }
+}
+
+@media (max-width: 1024px) {
+  .modulo--full {
+    min-height: 0; /* Evita alturas rígidas en pantallas chicas */
+  }
+  .contenido .modulo--full {
+    margin: -24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contenido .modulo--full {
+    margin: 0; /* En móviles, usar márgenes normales */
+  }
+}
+
 .stats-card {
+  display: flex; /* Bloques internos en columna */
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid #7a5bff; /* Marco violeta */
+  border-radius: 22px;
+  background: linear-gradient(180deg,#ffffff 0%, #f6f3ff 70%); /* Degradado suave */
+  box-shadow: 0 18px 38px rgba(60,38,122,0.12);
+  color: #2b1c52; /* Texto morado oscuro */
+  min-height: calc(100vh - 80px); /* Igual altura que el módulo */
+  height: 100%;
+  max-height: none;
+  overflow: hidden; /* Oculta desbordes de gráficos/tablas */
+}
+
+.stats-heading-block {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 15px;
-  border: 2px solid #7a5bff;
-  border-radius: 28px;
-  background: linear-gradient(180deg,#ffffff 0%, #f6f3ff 70%);
-  box-shadow: 0 28px 60px rgba(60,38,122,0.14);
-  color: #2b1c52;
-  height: auto;
-  overflow: auto;
+  gap: 8px;
+  flex: 0 0 10%; /* Ocupa una fracción fija arriba */
+  min-height: 110px;
+  max-height: 14%;
+}
+
+.stats-content-block {
+  flex: 1 1 auto; /* El contenido principal puede crecer */
+  min-height: 0; /* Permite que flexbox calcule alturas */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
 }
 
 .stats-header h2 {
   font-family: var(--font-heading);
-  font-size: 20px;
+  font-size: 1.4rem;
   color: #2b1c52;
-  margin: 2px 0 0;
+  margin: 0;
 }
 
 .stats-header .section-tag {
-  letter-spacing: 0.1em;
-  font-size: 11px;
+  letter-spacing: 0.1em; /* Amplía letras para estilo etiqueta */
+  font-size: 0.6rem;
   text-transform: uppercase;
   color: #a396df;
 }
@@ -98,40 +489,43 @@
 .stats-focus-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
   align-items: stretch;
-  flex-shrink: 0;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .metric-card--focus {
-  flex: 1 1 10px;
+  flex: 1 1 120px; /* Se adapta según espacio */
   border: 2px solid #cab9ff;
-  border-radius: 28px;
+  border-radius: 20px;
   background: #f6f1ff;
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.6), 0 18px 32px rgba(118,86,218,0.12);
-  padding: 16px 20px;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.5), 0 12px 24px rgba(118,86,218,0.1);
+  padding: 8px 12px;
 }
 
 .metric-card--focus strong {
-  font-size: 10px;
+  font-size: 1rem;
   color: #4d2ed1;
 }
 
 .stats-card .metric-card {
   background: #ffffff;
   border: 1px solid #d8ccff;
-  border-radius: 20px;
-  box-shadow: 0 12px 24px rgba(77,55,166,0.12);
-  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(77,55,166,0.08);
+  padding: 8px 10px;
 }
 
 .stats-card .metric-card span {
   color: #4c3592;
   font-weight: 600;
+  font-size: 0.85rem;
 }
 
 .stats-card .metric-card strong {
   color: #4d2ed1;
+  font-size: 1rem;
 }
 
 .stats-focus-row .metric-card small,
@@ -140,19 +534,19 @@
 }
 
 .stats-filter-card {
-  flex: 1 1 26px;
+  flex: 1 1 180px; /* Puede crecer pero parte de un ancho mínimo */
   border: 2px solid #cab9ff;
-  border-radius: 28px;
-  padding: 18px 20px;
+  border-radius: 22px;
+  padding: 10px 14px;
   background: #fff;
-  box-shadow: 0 18px 40px rgba(77,55,166,0.18);
+  box-shadow: 0 14px 28px rgba(77,55,166,0.12);
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 .stats-filter-card__label {
-  font-weight: 20;
+  font-weight: 20; /* Etiqueta ligera (valor heredado del diseño original) */
   color: #4d2ed1;
   font-size: 16px;
 }
@@ -160,7 +554,7 @@
 .stats-filter-card__controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -172,46 +566,51 @@
 .stats-filter-card input[type="date"],
 .stats-filter-card select {
   border: none;
-  background: #f2eeff;
+  background: #f2eeff; /* Fondo lavanda */
   border-radius: 999px;
-  padding: 10px 16px;
-  font-weight: 10;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
   color: #2b1c52;
-  box-shadow: inset 0 2px 6px rgba(39,24,71,0.08);
+  box-shadow: inset 0 1px 4px rgba(39,24,71,0.08);
+  width: 160px;
+  height: 34px;
 }
 
+
 .stats-filter-card select {
-  appearance: none;
+  appearance: none; /* Quita el ícono por defecto */
   background-image: linear-gradient(45deg, transparent 50%, #4d2ed1 50%),
-    linear-gradient(135deg, #4d2ed1 50%, transparent 50%);
+    linear-gradient(135deg, #4d2ed1 50%, transparent 50%); /* Flecha custom */
   background-position: calc(100% - 18px) calc(50% + 2px), calc(100% - 12px) calc(50% + 2px);
   background-size: 6px 6px;
   background-repeat: no-repeat;
-  padding-right: 32px;
+  padding-right: 32px; /* Espacio para la flecha */
 }
 
 .stats-filter-card__btn {
   background: #fff;
   color: #4d2ed1;
-  border: 2px solid #4d2ed1;
+  border: 1px solid #4d2ed1;
   border-radius: 999px;
-  padding: 10px 20px;
-  font-weight: 10;
+  padding: 6px 16px;
+  font-weight: 600;
+  font-size: 0.85rem;
   box-shadow: none;
 }
 
 
 .stats-metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); /* Se adapta al ancho */
+  gap: 10px;
   flex-shrink: 0;
 }
 
 .stats-layout {
   display: grid;
-  grid-template-rows: minmax(240px, 0.55fr) minmax(240px, 0.45fr);
-  gap: 16px;
+  grid-template-rows: minmax(170px, 0.5fr) minmax(170px, 0.5fr);
+  gap: 12px;
   flex: 1;
   min-height: 0;
 }
@@ -219,7 +618,7 @@
 .stats-charts-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
+  gap: 12px;
   min-height: 0;
 }
 
@@ -230,16 +629,16 @@
 
 .chart-card {
   background: #f9f7ff;
-  border-radius: 22px;
-  padding: 20px;
+  border-radius: 18px;
+  padding: 12px;
   border: 2px solid #d9ccff;
-  box-shadow: 0 20px 40px rgba(48,33,120,0.12);
+  box-shadow: 0 16px 30px rgba(48,33,120,0.12);
 }
 
 .stats-table {
   background: #fff;
-  border-radius: 24px;
-  padding: 20px;
+  border-radius: 20px;
+  padding: 16px;
   border: 2px solid #d9ccff;
   box-shadow: 0 18px 40px rgba(48,33,120,0.12);
   display: flex;
@@ -251,6 +650,7 @@
 .stats-table .tabla-wrapper {
   flex: 1;
   min-height: 0;
+  max-height: none;
   overflow: auto;
 }
 
@@ -270,72 +670,53 @@
 }
 
 .stats-layout canvas {
-  width: 100% !important;
+  width: 100% !important; /* Obliga a ChartJS a llenar el contenedor */
   height: 100% !important;
 }
 
 @media (max-width: 1024px) {
   .stats-focus-row {
-    flex-direction: column;
+    flex-direction: column; /* Métricas apiladas */
   }
   .stats-card {
     height: auto;
     max-height: none;
     overflow: visible;
   }
+  .stats-heading-block {
+    flex: 0 0 auto; /* Altura según contenido */
+  }
   .stats-layout {
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto; /* Las filas se ajustan al contenido */
   }
 }
 /* === Componentes reutilizables: tablas genéricas === */
-.tabla-wrapper table,
-.tabla-clientes,
-.tabla-proveedores {
+.tabla-wrapper table{
   width: 100%;
   border-collapse: collapse;
-  background: var(--surface);
+  background: var(--surface); /* Blanco consistente */
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
 }
 
 .tabla-wrapper th,
-.tabla-wrapper td,
-.tabla-clientes th,
-.tabla-clientes td,
-.tabla-proveedores th,
-.tabla-proveedores td {
+.tabla-wrapper td {
   padding: 10px;
   border-bottom: 1px solid var(--border);
   text-align: left;
 }
 
 .tabla-wrapper th {
-  background: #f0f0f0;
-}
-
-.movimientos-tabla {
-  max-height: calc(100vh - 220px);
-  overflow: auto;
-  border: 1px solid rgba(44,40,77,0.12);
-  border-radius: 16px;
-  box-shadow: 0 10px 22px rgba(44,40,77,0.08);
-  background: #fff;
-}
-
-.movimientos-tabla table th {
-  background: #eef0ff;
-  color: #4a4d9a;
+  background: #f0f0f0; /* Resalta encabezados */
 }
 
 /* Cabeceras pegajosas reutilizables para todas las tablas largas */
 .inventario-tabla-wrapper thead th,
 .ventas-inventario table thead th,
 .ventas-canasta table thead th,
-.movimientos-tabla table thead th,
+.movimientos-tabla-scroll table thead th,
 .tabla-wrapper table thead th,
-.tabla-clientes thead th,
-.tabla-proveedores thead th,
 .stats-table .tabla-wrapper thead th {
   position: sticky;
   top: 0;
@@ -345,24 +726,251 @@
 }
 
 .tabla-wrapper button {
-  margin-right: 6px;
+  margin-right: 6px; /* Espacio entre acciones */
+}
+
+/* === Sección 13: Contactos (Clientes y Proveedores) === */
+.contact-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f1edff 100%); /* Fondo degradado */
+  border-radius: 36px; /* Bordes suaves tipo tarjeta */
+  border: 2px solid rgba(73, 55, 155, 0.18); /* Contorno violeta claro */
+  box-shadow: 0 24px 64px rgba(36, 19, 85, 0.12); /* Sombra profunda */
+  padding: 28px; /* Espacio interior amplio */
+  display: flex; /* Apila bloques verticales */
+  flex-direction: column;
+  gap: 20px; /* Separación entre secciones */
+}
+
+.contact-card__header {
+  display: flex; /* Título y acciones alineados */
+  justify-content: space-between; /* Distribuye hacia extremos */
+  gap: 18px;
+  align-items: flex-start; /* Mantiene parte superior alineada */
+}
+
+.contact-card__header h2 {
+  font-size: 2.1rem; /* Título llamativo */
+  margin: 2px 0 0; /* Ajuste fino superior */
+  color: #2e2161; /* Morado profundo */
+}
+
+.contact-card__toolbar {
+  display: flex; /* Controles en fila */
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap; /* Permite varias líneas */
+}
+
+.contact-search {
+  flex: 1 1 320px; /* Crece pero mantiene ancho base */
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #d9d2ff; /* Borde lavanda */
+  border-radius: 999px;
+  padding: 8px 16px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65); /* Sutil brillo interno */
+}
+
+.contact-search__icon {
+  font-size: 1.1rem; /* Tamaño similar al texto */
+  margin-right: 10px; /* Espacio antes del input */
+  color: #a29acb; /* Gris lavanda */
+}
+
+.contact-search input {
+  border: none; /* Utiliza el borde del contenedor */
+  outline: none;
+  flex: 1; /* Ocupa todo el espacio restante */
+  font-size: 1rem;
+  color: #362760;
+  background: transparent;
+}
+
+.contact-search__clear {
+  border: none;
+  background: transparent;
+  font-size: 1.4rem;
+  color: #a29acb;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.contact-metrics {
+  display: flex; /* Métricas lado a lado */
+  gap: 14px;
+  flex-wrap: wrap; /* Saltan si no caben */
+}
+
+.contact-pill {
+  background: rgba(226, 222, 253, 0.8);
+  border: 1px solid rgba(89, 72, 163, 0.24);
+  border-radius: 999px;
+  padding: 10px 22px;
+  min-width: 180px; /* Evita píldoras demasiado estrechas */
+}
+
+.contact-pill span {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #7c72ab;
+}
+
+.contact-pill strong {
+  display: block;
+  font-size: 1.2rem;
+  color: #2d1f5f;
+}
+
+.contact-table {
+  border: 2px solid rgba(73,55,155,0.16); /* Marco violeta translúcido */
+  border-radius: 30px; /* Tarjeta redondeada */
+  background: #fff; /* Fondo neutro */
+  padding: 18px 22px 26px; /* Espacio interno amplio */
+  box-shadow: 0 22px 60px rgba(36, 19, 85, 0.1); /* Sombra profunda */
+  overflow-x: auto; /* Permite desplazamiento lateral en móviles */
+}
+
+.contact-table table,
+.contact-table .tabla-clientes,
+.contact-table .tabla-proveedores {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px; /* Espacio vertical entre filas */
+  border: none;
+  background: transparent;
+}
+
+.contact-table thead th {
+  background: rgba(214, 224, 255, 0.8); /* Banda azul claro */
+  color: #2f225f;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  text-transform: none;
+  padding: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 1; /* Se mantienen sobre las filas */
+}
+
+.contact-table tbody tr {
+  background: transparent;
+}
+
+.contact-table tbody td {
+  background: #f3f4ff;
+  border: none;
+  border-radius: 18px;
+  padding: 12px 16px;
+  color: #2f2462;
+  font-weight: 500;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.contact-table tbody td:first-child {
+  font-size: 0.8rem;
+  color: #a19ac5;
+  width: 60px;
+  text-align: center;
+}
+
+.contact-table tbody td:last-child {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.contact-table tbody td[contenteditable="true"]:focus {
+  outline: 2px solid rgba(77, 46, 209, 0.35);
+  background: #fff;
+}
+
+.contact-table-actions {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.contact-table button,
+.contact-table .btn-editar-cliente,
+.contact-table .btn-eliminar-cliente,
+.contact-table .btn-delete-proveedor {
+  border: none; /* Botones planos */
+  background: transparent;
+  color: #4d2ed1; /* Morado estándar */
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 6px 12px;
+  transition: background 0.2s ease;
+}
+
+.contact-table .btn-eliminar-cliente,
+.contact-table .btn-delete-proveedor {
+  color: #cc3754; /* Rojo para acciones peligrosas */
+}
+
+.contact-table button:hover,
+.contact-table .btn-editar-cliente:hover,
+.contact-table .btn-eliminar-cliente:hover,
+.contact-table .btn-delete-proveedor:hover {
+  background: rgba(77, 46, 209, 0.1); /* Realce translúcido */
+}
+
+@media (max-width: 768px) {
+  .contact-card {
+    padding: 22px;
+  }
+  .contact-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .contact-card__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .contact-table thead th {
+    font-size: 0.8rem;
+  }
+  .contact-table tbody td {
+    font-size: 0.85rem;
+  }
 }
 .ajustes-grupo {
-  margin-bottom: 15px;
+  margin-bottom: 15px; /* Espacio inferior entre grupos */
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  flex-direction: column; /* Etiqueta sobre el input */
+  gap: 5px; /* Separación entre elementos */
 }
 /* === Sección 12: Panel de perfil del usuario === */
 .perfil-info{
-  padding: 18px;
-  display: grid;
-  grid-template-columns: 96px 1fr;
-  gap: 12px;
-  align-items: start;
-  background: #f8f9fb;
-  border-radius: 12px;
-  border: 1px solid var(--border);
+  padding: 18px; /* Relleno homogéneo */
+  display: grid; /* Organiza foto + formulario */
+  grid-template-columns: 96px 1fr; /* Primera columna fija para avatar */
+  gap: 12px; /* Separación entre columnas */
+  align-items: start; /* Alinea contenido en la parte superior */
+  background: #f8f9fb; /* Panel gris claro */
+  border-radius: 12px; /* Bordes suaves */
+  border: 1px solid var(--border); /* Delimita contra el fondo */
 }
-.perfil-info img{ width:96px; height:96px; object-fit:cover; border-radius:12px; border: 3px solid #fff }
-.perfil-info input, .perfil-info textarea{ width:100%; }
+.perfil-info img{
+  width:96px; /* Tamaño consistente para avatar */
+  height:96px;
+  object-fit:cover; /* Evita deformaciones */
+  border-radius:12px; /* Esquinas suaves */
+  border: 3px solid #fff; /* Marco blanco que resalta la imagen */
+}
+.perfil-info input,
+.perfil-info textarea{
+  width:100%; /* Campos ocupan todo el ancho disponible */
+  border: 1px solid var(--border); /* Línea neutra compartida */
+  border-radius: 8px; /* Consistencia con otros inputs */
+  padding: 8px 10px; /* Espacio interno cómodo */
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: #fff;
+}

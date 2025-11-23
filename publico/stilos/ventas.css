@@ -1,105 +1,461 @@
 /* ===============================
-    Ventas: inventario dual y canasta
+    Ventas: UI estilo tarjeta
    =============================== */
-.ventas-header {
-    display: flex;
-    gap: 20px;
+
+/* Paleta específica del módulo de ventas */
+:root {
+    --ventas-borde: #4d3aa7; /* Color para bordes principales */
+    --ventas-acento: #fddc69; /* Amarillo para resaltar chips y totales */
+    --ventas-lila: #f4f1ff; /* Fondo lila muy claro */
+    --ventas-texto: #2c2b5d; /* Texto principal en morado oscuro */
 }
 
-.ventas-inventario,
-.ventas-canasta {
-    flex: 1;
-    border: 1px solid #ccc;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-spacing: 8px;
+/* Contenedor general que aloja catálogo y carrito */
+.ventas-layout {
+    border: 2px solid var(--ventas-borde); /* Borde morado para encuadrar la tarjeta */
+    border-radius: 28px; /* Esquinas redondeadas grandes */
+    padding: 32px; /* Espaciado interno amplio */
+    background: linear-gradient(180deg, #ffffff 0%, #fdf9ff 100%); /* Degradado suave para dar profundidad */
+    display: flex; /* Sitúa catálogo y carrito uno al lado del otro */
+    gap: 32px; /* Separación entre las dos columnas */
+    box-shadow: 0 18px 35px rgba(22, 7, 77, 0.15); /* Sombra suave para efecto flotante */
+    flex-wrap: wrap; /* Permite que los paneles bajen cuando no hay ancho */
 }
 
-.ventas-inventario {
-    flex: 1 1 0;
-    overflow-y: auto;
-    max-height: calc(100vh - 180px);
-    position: sticky;
-    top: 20px;
+/* Base para cada panel interno (catálogo/carrito) */
+.ventas-panel {
+    background: transparent; /* Sin fondo adicional, se hereda del layout */
+    display: flex; /* Permite apilar componentes verticalmente */
+    flex-direction: column; /* Coloca cada bloque uno encima del otro */
+    gap: 20px; /* Separación uniforme entre secciones internas */
 }
 
-.ventas-canasta {
-    width: 360px;
-    border: 1px solid #4752ae;
-    border-radius: 12px;
-    background: var(--surface);
-    position: sticky;
-    top: 20px;
-    height: calc(100vh - 160px);
-    overflow-y: auto;
-    flex: 0 0 360px;
-    padding: 16px;
+/* Panel dedicado a la lista de productos disponibles */
+.ventas-panel--catalogo {
+    flex: 1 1 520px; /* Ocupa mayor espacio y puede reducirse hasta 520px */
+    padding-right: 32px; /* Espacio para separar visualmente del carrito */
+    border-right: 2px solid var(--ventas-borde); /* Línea divisoria entre columnas */
+    position: sticky; /* Se mantiene visible al hacer scroll */
+    top: 20px; /* Margen superior cuando se fija */
+    height: calc(100vh - 140px); /* Altura relativa a la ventana para permitir scroll interno */
+    max-height: calc(100vh - 140px); /* Evita crecer más allá del viewport */
 }
 
-.ventas-inventario table,
-.ventas-canasta table {
-    width: 100%;
-    border-collapse: collapse;
+/* Wrapper interno del catálogo para separar header y grilla */
+.ventas-panel--catalogo-inner {
+    display: flex; /* Permite apilar header, chips y grilla */
+    flex-direction: column; /* Coloca los bloques uno debajo del otro */
+    gap: 20px; /* Separación uniforme */
+    height: 100%; /* Ocupa toda la altura disponible del panel sticky */
 }
 
-.ventas-inventario tbody tr {
-    cursor: pointer;
-    transition: background 0.15s ease, transform 0.1s ease;
+/* Panel que contiene el carrito y acciones finales */
+.ventas-panel--cart {
+    flex: 0 0 360px; /* Ancho fijo de referencia para el carrito */
+    max-width: 420px; /* Permite crecer un poco en pantallas amplias */
+    position: sticky; /* Siempre visible mientras se hace scroll */
+    top: 20px; /* Pegado con margen superior */
+    height: calc(100vh - 140px); /* Ajuste a la altura de la ventana */
+    max-height: calc(100vh - 140px); /* Evita desbordes verticales */
+    display: flex; /* Distribuye secciones internas en columna */
+    flex-direction: column; /* Alineación vertical de acciones, lista y totales */
 }
 
-.ventas-inventario tbody tr:hover {
-    background: rgba(155, 89, 255, 0.08);
-    transform: translateX(2px);
+/* Cabecera del panel (título + buscador) */
+.ventas-panel-header {
+    display: flex; /* Título y buscador en la misma fila */
+    align-items: center; /* Centra verticalmente */
+    gap: 20px; /* Espacio entre título y buscador */
+    justify-content: space-between; /* Empuja buscador al extremo derecho */
 }
 
-.venta-producto-img-cell { width: 64px; }
-.venta-producto-img {
-    width: 52px;
+/* Título principal del panel */
+.ventas-panel-header h2 {
+    font-size: 2.25rem; /* Tamaño grande para jerarquía */
+    color: var(--ventas-texto); /* Usa el morado de texto */
+    margin: 0; /* Elimina espacios adicionales */
+    font-weight: 700; /* Negrita marcada */
+}
+
+/* Barra de búsqueda de productos */
+.ventas-search {
+    flex: 1; /* Se expande para ocupar el espacio disponible */
+    display: flex; /* Ubica ícono, input y botón en línea */
+    align-items: center; /* Centra verticalmente los elementos internos */
+    gap: 10px; /* Separación entre ícono, input y botón */
+    border: 1.5px solid #c7c0f5; /* Borde suave morado claro */
+    border-radius: 999px; /* Forma de píldora */
+    padding: 6px 14px; /* Espacio interior sin que se vea apretado */
+    background: #fff; /* Fondo blanco para contraste con el texto */
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5); /* Borde interno sutil */
+}
+
+/* Campo de texto del buscador */
+.ventas-search input {
+    border: none; /* Sin borde propio para usar el del contenedor */
+    outline: none; /* Quita contorno azul por defecto */
+    flex: 1; /* Ocupa toda la anchura restante */
+    font-size: 1rem; /* Tamaño legible */
+    background: transparent; /* Deja ver el fondo blanco del contenedor */
+}
+
+/* Ícono que acompaña el input de búsqueda */
+.ventas-search-icon {
+    font-size: 1.1rem; /* Ligero aumento para resaltarlo */
+}
+
+/* Botón para limpiar el texto del buscador */
+.ventas-search-clear {
+    border: none; /* Apariencia minimalista */
+    background: transparent; /* Sin fondo para mantenerse discreto */
+    font-size: 1.1rem; /* Tamaño similar al ícono */
+    color: #7a7691; /* Color gris-morado suave */
+    cursor: pointer; /* Indica que se puede hacer clic */
+}
+
+/* Contenedor de los filtros por categoría */
+.ventas-categorias-chips {
+    display: flex; /* Los chips se alinean en fila */
+    gap: 12px; /* Separación constante entre chips */
+    flex-wrap: wrap; /* Permite que los chips bajen si no caben */
+}
+
+/* Aspecto base de los chips de categoría y botones compactos */
+.ventas-categorias-chips button,
+.ventas-chip-btn {
+    border: none; /* Quita los bordes para un look plano */
+    background: var(--ventas-acento); /* Usa el amarillo de acento */
+    color: #5d4205; /* Texto marrón para contraste */
+    padding: 6px 20px; /* Espacio horizontal generoso */
+    border-radius: 18px; /* Forma redondeada */
+    font-weight: 600; /* Texto en seminegrita */
+    cursor: pointer; /* Indica que son interactivos */
+    box-shadow: inset 0 -3px rgba(0,0,0,0.15); /* Sombra interna para efecto tridimensional */
+    transition: transform 0.15s ease, box-shadow 0.15s ease; /* Animaciones suaves al interactuar */
+}
+
+/* Estado activo de cada chip */
+.ventas-categorias-chips button.is-active,
+.ventas-chip-btn.is-active {
+    background: #f7c735; /* Amarillo más intenso */
+    box-shadow: inset 0 -3px rgba(255,255,255,0.4); /* Luz interna para resaltarlo */
+}
+
+/* Pequeño levante al pasar el cursor */
+.ventas-categorias-chips button:hover,
+.ventas-chip-btn:hover {
+    transform: translateY(-1px); /* Indica interacción visual */
+}
+
+/* Wrapper de la grilla de productos, permite scroll independiente */
+.ventas-grid-wrapper {
+    flex: 1; /* Ocupa todo el alto disponible */
+    overflow-y: auto; /* Activa scroll vertical interno */
+    padding-right: 6px; /* Espacio para que la barra de scroll no tape contenido */
+}
+
+/* Grilla que distribuye las tarjetas de producto */
+.ventas-grid {
+    display: grid; /* Coloca productos en columnas uniformes */
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Ajusta cantidad de columnas según ancho */
+    gap: 18px; /* Espaciado entre tarjetas */
+}
+
+/* Tarjeta individual de producto */
+.venta-card {
+    border: 1.5px solid #d5d0f2; /* Borde suave gris/lila */
+    border-radius: 18px; /* Esquinas redondeadas suaves */
+    padding: 16px 14px; /* Espacio interno equilibrado */
+    background: #fff; /* Fondo blanco para resaltar la imagen */
+    text-align: center; /* Centra el contenido dentro de la tarjeta */
+    cursor: pointer; /* Indica que se puede seleccionar */
+    box-shadow: 0 10px 20px rgba(34, 27, 84, 0.12); /* Sombra suave para flotado */
+    transition: transform 0.18s ease, box-shadow 0.18s ease; /* Animación al interactuar */
+}
+
+/* Efecto hover de la tarjeta */
+.venta-card:hover {
+    transform: translateY(-4px); /* Se eleva ligeramente */
+    box-shadow: 0 16px 28px rgba(34, 27, 84, 0.18); /* Sombra más profunda para enfatizar */
+}
+
+/* Marco que contiene la imagen del producto */
+.venta-card-img-wrapper {
+    width: 100%; /* Ocupa el ancho de la tarjeta */
+    height: 90px; /* Altura fija para imágenes consistentes */
+    border-radius: 14px; /* Esquinas redondeadas */
+    overflow: hidden; /* Recorta lo que sobresalga de la imagen */
+    background: linear-gradient(180deg, #e0f2ff 0%, #f5fbff 100%); /* Fallback cuando no hay imagen */
+    margin-bottom: 12px; /* Separación respecto al texto */
+    display: flex; /* Centra la imagen */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Imagen del producto */
+.venta-card-img-wrapper img {
+    width: 100%; /* Se estira al ancho del contenedor */
+    height: 100%; /* Se estira al alto del contenedor */
+    object-fit: cover; /* Recorta la imagen manteniendo proporción sin deformarla */
+}
+
+/* Nombre corto del producto */
+.venta-card-title {
+    font-size: 1rem; /* Tamaño estándar */
+    color: var(--ventas-texto); /* Morado oscuro */
+    font-weight: 600; /* Seminegrita para destacarlo */
+    display: block; /* Ocupa toda la línea */
+    margin-bottom: 6px; /* Espacio respecto a los meta datos */
+}
+
+/* Línea que muestra precio y stock disponible */
+.venta-card-meta {
+    display: flex; /* Coloca precio y stock en extremos opuestos */
+    justify-content: space-between; /* Empuja cada bloque hacia los extremos */
+    font-size: 0.85rem; /* Texto menor para meta datos */
+    color: #6a6787; /* Gris morado suave */
+}
+
+/* Precio mostrado en la tarjeta */
+.venta-card-price {
+    font-weight: 700; /* Negrita para destacar el monto */
+    color: var(--ventas-texto);
+}
+
+/* Indicador del stock disponible */
+.venta-card-stock {
+    font-weight: 100; /* Texto más ligero para no competir con el precio */
+}
+
+/* Fila superior del carrito con acciones rápidas */
+.ventas-cart-actions {
+    display: flex; /* Coloca selectores y botones en línea */
+    gap: 12px; /* Espaciado uniforme entre controles */
+    justify-content: space-between; /* Empuja cada control a cubrir el ancho */
+}
+
+/* Selector desplegable de cliente */
+.ventas-cliente-select select {
+    width: 100%; /* Hace que el select llene su contenedor */
+}
+
+/* Botones que alternan el tipo de pago */
+.ventas-pago-toggle {
+    display: flex; /* Coloca opciones una junto a otra */
+    gap: 12px; /* Separa cada botón */
+}
+
+/* Botón para seleccionar método de pago */
+.ventas-pago-btn {
+    flex: 1; /* Cada botón ocupa el mismo ancho */
+    border: none; /* Apariencia plana */
+    border-radius: 18px; /* Píldora suave */
+    padding: 10px 18px; /* Área táctil amplia */
+    font-weight: 700; /* Para destacar el texto */
+    cursor: pointer; /* Indica que es interactivo */
+    background: #efe9ff; /* Lila claro como estado base */
+    color: var(--ventas-texto);
+    box-shadow: inset 0 -3px rgba(0,0,0,0.12); /* Relieve interno discreto */
+}
+
+/* Estado activo del botón de pago */
+.ventas-pago-btn.is-active {
+    background: var(--ventas-acento); /* Cambia a amarillo para resaltar */
+    color: #5d4205; /* Texto oscuro que contraste con el fondo */
+    box-shadow: inset 0 -4px rgba(0,0,0,0.2); /* Más profundidad al estar seleccionado */
+}
+
+/* Mensaje de alerta asociado al método de pago */
+.ventas-pago-alerta {
+    margin: 0; /* Evita salto extra debajo de los botones */
+    font-size: 0.85rem; /* Texto compacto */
+    color: #b82020; /* Rojo de advertencia */
+    font-weight: 600; /* Resalta la advertencia */
+}
+
+/* Lista que contiene los productos agregados al carrito */
+.canasta-list {
+    flex: 1; /* Ocupa todo el espacio vertical sobrante */
+    display: flex; /* Cada ítem se apila verticalmente */
+    flex-direction: column; /* Alineación en columna */
+    gap: 12px; /* Separación entre tarjetas del carrito */
+    overflow-y: auto; /* Scroll independiente si se llena */
+    padding-right: 4px; /* Evita que el scroll tape contenido */
+}
+
+/* Tarjeta del carrito para cada producto seleccionado */
+.canasta-item {
+    display: flex; /* Imagen y datos en fila */
+    align-items: center; /* Centra verticalmente los elementos */
+    gap: 10px; /* Separación entre miniatura y texto */
+    border: 2px solid #241c46; /* Borde morado oscuro para destacar */
+    border-radius: 20px; /* Forma suave y moderna */
+    padding: 10px; /* Espacio interno equilibrado */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12); /* Sombra para destacar contra el fondo */
+    background: #fff; /* Fondo claro para legibilidad */
+}
+
+/* Miniatura del producto dentro del carrito */
+.canasta-item-thumb {
+    width: 52px; /* Tamaño compacto constante */
     height: 52px;
-    object-fit: cover;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-}
-.venta-producto-nombre { font-weight: 600; color: var(--color-primary); }
-.venta-producto-desc {
-    display: block;
-    font-size: 12px;
-    color: var(--color-muted);
-    margin-top: 2px;
+    border-radius: 10px; /* Esquinas redondeadas suaves */
+    overflow: hidden; /* Evita que la imagen sobresalga */
+    background: #edf0ff; /* Color de respaldo si no hay imagen */
+    flex-shrink: 0; /* Impide que la miniatura se reduzca con flex */
 }
 
-.ventas-cliente-select { margin-bottom: 12px; }
-.ventas-cliente-select select { width: 100%; }
+/* Imagen dentro de la miniatura */
+.canasta-item-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Recorta sin deformar la imagen */
+}
 
-.ventas-acciones { display: flex; gap: 10px; margin-top: 10px; }
-.ventas-acciones button { flex: 1; }
+/* Contenedor del texto (título y controles) */
+.canasta-item-content {
+    flex: 1; /* Llena el espacio restante dentro del item */
+    display: flex;
+    flex-direction: column; /* Acomoda título y controles en columna */
+    gap: 6px; /* Separación vertical uniforme */
+}
 
-/* Ajustes responsivos de ventas */
-@media (max-width: 768px) {
-    .ventas-header { flex-direction: column; align-items: center; }
-    .ventas-inventario,
-    .ventas-canasta {
-        width: 100%;
-        overflow-x: auto;
-        position: static;
+/* Nombre del producto dentro del carrito */
+.canasta-item-title {
+    font-weight: 700; /* Se mantiene visible aun con muchos elementos */
+    color: var(--ventas-texto);
+}
+
+/* Contenedor de etiquetas, precios y campos de cantidad */
+.canasta-item-controls {
+    display: flex; /* Alinea controles de forma ordenada */
+    flex-wrap: wrap; /* Permite que los elementos bajen si no caben */
+    align-items: center; /* Centra verticalmente los distintos textos */
+    gap: 10px; /* Espacio entre controles */
+    font-size: 0.85rem; /* Tamaño compacto */
+    color: #4d4776; /* Gris morado medio */
+}
+
+/* Etiqueta textual para los campos dentro del carrito */
+.canasta-item-controls label {
+    font-weight: 600; /* Da énfasis al descriptor */
+}
+
+/* Input donde se ajusta la cantidad del producto */
+.canasta-cantidad {
+    width: 70px; /* Ancho fijo para números */
+    border-radius: 10px; /* Mantiene estética redondeada */
+    border: 1px solid #b4addc; /* Borde lila claro */
+    padding: 4px 8px; /* Espacio interno para facilitar lectura */
+    font-size: 0.9rem;
+}
+
+/* Precio unitario y subtotal del artículo */
+.canasta-item-price,
+.canasta-item-subtotal {
+    font-weight: 600; /* Peso fuerte para datos monetarios */
+    color: var(--ventas-texto);
+}
+
+/* Botón para quitar el producto del carrito */
+.canasta-remove {
+    border: none; /* Botón minimalista */
+    background: transparent; /* Se integra con el fondo */
+    font-size: 1.3rem; /* Suficiente para el ícono/X */
+    color: #3c2d7a; /* Morado oscuro para resaltar */
+    cursor: pointer;
+}
+
+/* Resumen del total a pagar dentro del carrito de ventas */
+.ventas-total {
+    display: flex; /* Coloca etiquetas y total en línea */
+    align-items: center; /* Centra verticalmente ambos lados */
+    justify-content: space-between; /* Separa descripción y monto final */
+    border: 2px solid #1f153e; /* Marco definido para el bloque final */
+    border-radius: 25px; /* Bordes suaves */
+    padding: 10px; /* Espacio interno alrededor del contenido */
+    background: #fff3ba; /* Amarillo claro que llama la atención */
+}
+
+/* Texto principal que acompaña al total */
+.ventas-total-labels span {
+    font-weight: 100; /* Peso ligero para contraste con el monto */
+    color: var(--ventas-texto);
+}
+
+/* Texto auxiliar debajo del label principal */
+.ventas-total-labels small {
+    font-size: 0.78rem; /* Muy discreto */
+    color: #7b6f59; /* Marrón suave */
+}
+
+/* Monto total a pagar */
+.ventas-total strong {
+    font-size: 1.4rem; /* Tamaño grande para ser protagonista */
+    color: #2b2155;
+}
+
+/* Botonera inferior del carrito (guardar, pagar, etc.) */
+.ventas-footer-actions {
+    display: flex; /* Coloca botones lado a lado */
+    flex-direction: fill; /* (Nota) valor no estándar, conserva intención original */
+    gap: 12px; /* Espacio entre botones */
+}
+
+/* Botones dentro del footer ocupan todo el ancho disponible */
+.ventas-footer-actions .btn {
+    width: 100%;
+}
+
+/* Mensaje que se muestra cuando el carrito está vacío */
+.ventas-empty {
+    padding: 30px; /* Amplio para que el bloque respire */
+    text-align: center; /* Centra el mensaje */
+    border: 1px dashed #bfb6df; /* Borde punteado para diferenciarlo */
+    border-radius: 10px; /* Mantiene estética redondeada */
+    color: #6c6694; /* Gris violáceo suave */
+    background: #faf8ff; /* Fondo lila muy claro */
+}
+
+/* Ajustes generales para tablets y laptops pequeñas */
+@media (max-width: 1024px) {
+    .ventas-layout {
+        padding: 20px; /* Reduce margen interno para aprovechar espacio */
+        border-width: 1px; /* Borde más delgado para pantallas chicas */
+    }
+    .ventas-panel--catalogo {
+        border-right: none; /* Quita línea divisoria para mayor fluidez */
+        padding-right: 0; /* Elimina separación adicional */
+        position: static; /* Deja de ser sticky en pantallas pequeñas */
+        height: auto; /* Permite que la altura se ajuste al contenido */
+        max-height: none; /* Remueve restricciones de viewport */
+    }
+    .ventas-panel--cart {
+        flex: 1 1 100%; /* Carrito pasa a ocupar todo el ancho disponible */
+        position: static; /* Ya no es sticky */
         height: auto;
-        display: none; /* Mantener comportamiento previo en móviles */
+        max-height: none;
     }
-    .ventas-acciones {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 10px;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: #fff;
-        padding: 10px;
-        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-        justify-content: space-around;
-        z-index: 1000;
+}
+
+/* Ajustes específicos para móviles */
+@media (max-width: 640px) {
+    .ventas-panel-header {
+        flex-direction: column; /* Título y buscador uno debajo del otro */
+        align-items: flex-start; /* Alinea ambos al inicio */
     }
-    .ventas-acciones button { width: 100%; }
+    .ventas-search {
+        width: 100%; /* El buscador ocupa todo el ancho del panel */
+    }
+    .venta-card {
+        padding: 12px; /* Reduce relleno para caber mejor */
+    }
+    .canasta-item {
+        flex-direction: column; /* Miniatura y contenido se apilan en columna */
+        align-items: flex-start; /* Alinea el contenido al borde izquierdo */
+        border-radius: 10px; /* Menor radios para adaptar espacios estrechos */
+    }
+    .canasta-remove {
+        align-self: flex-end; /* Ubica el botón de eliminar en la esquina superior */
+    }
 }

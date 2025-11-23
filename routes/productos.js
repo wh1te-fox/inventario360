@@ -8,7 +8,25 @@ const fs = require('fs');
 const uploadDir = path.join(__dirname, '..', 'publico', 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
-// Listar productos
+// Decodifica un dataUrl base64 y lo persiste en disco devolviendo la ruta pública
+const saveImageFromDataUrl = (name, dataUrlValue) => {
+  const matches = typeof dataUrlValue === 'string' && dataUrlValue.match(/^data:(image\/(png|jpeg|jpg));base64,(.+)$/);
+  if (!matches) return null;
+  const ext = matches[2] === 'jpeg' ? 'jpg' : matches[2];
+  const base64Data = matches[3];
+  const safeName = (name || 'prod').replace(/[^a-z0-9_-]/gi,'');
+  const filename = `${safeName || 'prod'}_${Date.now()}.${ext}`;
+  const filepath = path.join(uploadDir, filename);
+  try {
+    fs.writeFileSync(filepath, Buffer.from(base64Data, 'base64'));
+    return `/uploads/${filename}`;
+  } catch (err) {
+    console.error('Error guardando imagen de producto:', err);
+    return null;
+  }
+};
+
+// Devuelve todos los productos junto con la categoría asociada
 router.get('/', (_req, res)=>{
   db.all(
     `SELECT p.id, p.nombre, p.descripcion, p.precio, p.costo, p.existencia, p.categoria_id, p.image_url, p.created_at, p.updated_at, c.nombre as categoria
@@ -21,7 +39,7 @@ router.get('/', (_req, res)=>{
   );
 });
 
-// Obtener producto por id
+// Recupera un producto específico por ID para vistas de detalle/edición
 router.get('/:id', (req, res)=>{
   const id = req.params.id;
   db.get('SELECT * FROM productos WHERE id = ?', [id], (err, row) => {
@@ -31,31 +49,15 @@ router.get('/:id', (req, res)=>{
   });
 });
 
-// Crear producto. Se acepta opcionalmente 'dataUrl' (base64) para la imagen en el body JSON.
+// Crea un producto nuevo y guarda la imagen enviada en base64 si existe
 router.post('/', (req, res)=>{
   const { nombre, descripcion, precio, costo, existencia, categoria_id, dataUrl } = req.body;
   if (!nombre) return res.status(400).json({ error: 'nombre es obligatorio' });
 
-  const saveImageFromDataUrl = (usernameLike, dataUrlValue) => {
-    // dataUrl example: data:image/png;base64,AAAABBBB...
-    const matches = typeof dataUrlValue === 'string' && dataUrlValue.match(/^data:(image\/(png|jpeg|jpg));base64,(.+)$/);
-    if (!matches) return null;
-    const ext = matches[2] === 'jpeg' ? 'jpg' : matches[2];
-    const base64Data = matches[3];
-    const filename = `${(usernameLike || 'prod').replace(/[^a-z0-9_-]/gi,'')}_${Date.now()}.${ext}`;
-    const filepath = path.join(uploadDir, filename);
-    try {
-      fs.writeFileSync(filepath, Buffer.from(base64Data, 'base64'));
-      return `/uploads/${filename}`;
-    } catch (err) {
-      console.error('Error guardando imagen de producto:', err);
-      return null;
-    }
-  };
-
   let image_url = null;
   if (dataUrl) {
     image_url = saveImageFromDataUrl(nombre, dataUrl);
+    if (!image_url) return res.status(400).json({ error: 'Formato de imagen inválido' });
   }
 
   db.run(
@@ -71,7 +73,7 @@ router.post('/', (req, res)=>{
   );
 });
 
-// Actualizar producto (completo)
+// Reemplaza todos los campos del producto y actualiza marca de tiempo
 router.put('/:id', (req, res)=>{
   const id = req.params.id;
   const { nombre, descripcion, precio, costo, existencia, categoria_id } = req.body;
@@ -86,7 +88,7 @@ router.put('/:id', (req, res)=>{
   });
 });
 
-// Actualizar parcialmente (precio, existencia)
+// Permite actualizar campos puntuales del producto y subir una nueva imagen
 router.patch('/:id', (req, res)=>{
   const id = req.params.id;
   const fields = [];
@@ -97,8 +99,16 @@ router.patch('/:id', (req, res)=>{
       values.push(req.body[k]);
     }
   });
+  let newImageUrl = null;
+  if (req.body.dataUrl) {
+    newImageUrl = saveImageFromDataUrl(req.body.nombre, req.body.dataUrl);
+    if (!newImageUrl) return res.status(400).json({ error: 'Formato de imagen inválido' });
+    fields.push('image_url = ?');
+    values.push(newImageUrl);
+  }
+
   if (fields.length === 0) return res.status(400).json({ error: 'Nada para actualizar' });
-  const shouldStampUpdate = ['existencia', 'precio', 'costo'].some(k => req.body[k] !== undefined);
+  const shouldStampUpdate = ['existencia', 'precio', 'costo'].some(k => req.body[k] !== undefined) || Boolean(newImageUrl);
   if (shouldStampUpdate) {
     fields.push("updated_at = strftime('%s','now')");
   }
@@ -114,7 +124,7 @@ router.patch('/:id', (req, res)=>{
   });
 });
 
-// Eliminar producto
+// Elimina un producto y devuelve error si el registro no existía
 router.delete('/:id', (req, res)=>{
   const id = req.params.id;
   db.run('DELETE FROM productos WHERE id = ?', [id], function (err) {

@@ -90,6 +90,7 @@ inventario360.use('/proveedores', proveedoresRoutes);
 // Plataformas como Render/Railway/Heroku suministran el PORT vía env y manejan TLS/proxy.
 // Handler de errores simple para devolver JSON en caso de errores (incluye rechazos CORS)
 // Middleware de manejo de errores (firmado con 4 parámetros para que Express lo reconozca)
+// Función que captura excepciones de rutas/middlewares y responde con JSON legible (detecta CORS).
 inventario360.use((err, req, res, next) => {
     console.error('Error en middleware:', err && err.message ? err.message : err);
     if (err && String(err.message || '').toLowerCase().includes('origen')) {

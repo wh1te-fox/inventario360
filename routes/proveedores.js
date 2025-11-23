@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// Listar proveedores con el total pendiente por pagar (egresos/gastos asociados)
+// Devuelve proveedores junto a la suma de egresos asociados para saber lo adeudado
 router.get('/', (_req, res) => {
   const sql = `
     SELECT p.*, COALESCE(t.total_por_pagar, 0) AS total_por_pagar
@@ -23,7 +23,7 @@ router.get('/', (_req, res) => {
   });
 });
 
-// Crear proveedor
+// Inserta un proveedor con datos de contacto básicos y devuelve el registro creado
 router.post('/', (req, res) => {
   const { nombre, contacto, telefono, email } = req.body;
   if (!nombre) return res.status(400).json({ error: 'nombre es requerido' });
@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
   });
 });
 
-// Actualizar proveedor
+// Modifica la información principal de un proveedor especificado por ID
 router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { nombre, contacto, telefono, email } = req.body;
@@ -50,7 +50,7 @@ router.put('/:id', (req, res) => {
   });
 });
 
-// Eliminar proveedor
+// Elimina al proveedor y responde con 404 si no existía previamente
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
   db.run('DELETE FROM proveedores WHERE id = ?', [id], function (err) {

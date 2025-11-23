@@ -2,6 +2,7 @@ console.log("login.js cargado");
 // validaciodecampos.js expone las variables y funciones en window (usuarioRegex, contraseñaRegex, etc.)
 
 // Mostrar/ocultar formularios (expuesto en window para los onclick del HTML)
+// Función que alterna la visibilidad de los formularios y asegura que sólo uno quede activo.
 function mostrarFormulario(formularioId){
     document.querySelectorAll('.formulario').forEach(f => f.classList.remove('activo'));
     const formulario = document.getElementById(formularioId);
@@ -10,6 +11,7 @@ function mostrarFormulario(formularioId){
 window.mostrarFormulario = mostrarFormulario;
 
 // Helper de depuración visible en la página (div #debugLogin)
+// Función que escribe mensajes de depuración en el panel o la consola con marca de tiempo.
 function debugLog(msg) {
     try {
         const el = document.getElementById('debugLogin');
@@ -21,6 +23,7 @@ function debugLog(msg) {
 }
 debugLog('login.js cargado');
 // Envío de datos para login
+// Maneja el submit del formulario de inicio: valida campos y envía la petición al backend.
 document.getElementById("formulario-inicio").addEventListener("submit", async function (e) {
     e.preventDefault();
     const usuarioInput = document.getElementById("login-username");
@@ -63,6 +66,7 @@ document.getElementById("formulario-inicio").addEventListener("submit", async fu
 });
 
 // Envío de datos para registro
+// Maneja el formulario de registro: valida entradas opcionales y crea al usuario vía API.
 document.getElementById("formulario-registro").addEventListener("submit", async function (e) {
     e.preventDefault();
     const usuarioInput = document.getElementById("registro-username");
@@ -111,6 +115,7 @@ document.getElementById("formulario-registro").addEventListener("submit", async 
 });
 
 // Confirmar recuperación desde enlace con token
+// Callback que, al cargar la página, detecta el token de recuperación en la URL y muestra el formulario correcto.
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
@@ -120,6 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// Maneja el formulario final para establecer una nueva contraseña usando el token recibido por correo.
 document.getElementById("formulario-confirmar-recuperacion").addEventListener("submit", async function (e) {
     e.preventDefault();
     const token = document.getElementById("token-recuperacion").value;

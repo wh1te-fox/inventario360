@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// Listar clientes junto con su saldo pendiente (ventas asociadas)
+// Devuelve clientes y suma de créditos pendientes para armar dashboards de cobranza
 router.get('/', (_req, res) => {
   const sql = `
     SELECT c.*, COALESCE(t.total_credito, 0) AS total_credito
@@ -10,7 +10,7 @@ router.get('/', (_req, res) => {
     LEFT JOIN (
       SELECT cliente_id, SUM(COALESCE(monto, 0)) AS total_credito
       FROM movimientos
-      WHERE cliente_id IS NOT NULL AND tipo = 'venta'
+      WHERE cliente_id IS NOT NULL AND tipo = 'venta' AND COALESCE(es_credito, 0) = 1
       GROUP BY cliente_id
     ) t ON t.cliente_id = c.id
     ORDER BY c.id DESC`;
@@ -23,7 +23,7 @@ router.get('/', (_req, res) => {
   });
 });
 
-// Crear cliente
+// Registra un cliente nuevo y responde con el registro completo
 router.post('/', (req, res) => {
   const { nombre, direccion, telefono, email } = req.body;
   if (!nombre) return res.status(400).json({ error: 'nombre es requerido' });
@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
   });
 });
 
-// Actualizar cliente
+// Modifica los datos de contacto de un cliente determinado por ID
 router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { nombre, direccion, telefono, email } = req.body;
@@ -50,7 +50,7 @@ router.put('/:id', (req, res) => {
   });
 });
 
-// Eliminar cliente
+// Borra el cliente indicado e informa si no existía
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
   db.run('DELETE FROM clientes WHERE id = ?', [id], function (err) {

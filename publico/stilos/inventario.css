@@ -1,93 +1,256 @@
 /* ===============================
-    Inventario: buscador y métricas
+    Inventario: diseño estilo maqueta
    =============================== */
-.search-box input[type="text"]{
-    padding: 10px 14px 10px 40px;
+
+:root {
+    --inv-purple: #4d2fb4; /* Morado principal del módulo */
+    --inv-purple-dark: #2e1d76; /* Variante oscura para contrastes */
+    --inv-yellow: #fddc69; /* Acentos amarillos para categorías */
+    --inv-bg: #f7f5ff; /* Fondo lavanda muy claro */
+    --inv-text: #2f2a60; /* Texto principal legible */
+}
+
+#inventario {
+    background: transparent; /* Deja que el layout padre pinte el fondo */
+}
+
+.inventario-card {
+    background: linear-gradient(180deg, #ffffff 0%, #faf8ff 100%); /* Tarjeta degradada */
+    border-radius: 32px; /* Bordes suaves estilo mockup */
+    border: 2px solid rgba(77, 47, 180, 0.25); /* Contorno translúcido */
+    box-shadow: 0 18px 35px rgba(40, 19, 92, 0.12); /* Profundidad elevada */
+    padding: 32px; /* Relleno generoso */
+    display: flex; /* Organiza secciones verticalmente */
+    flex-direction: column;
+    gap: 24px; /* Espaciado uniforme entre bloques */
+    max-height: calc(100vh - 120px); /* Mantiene la tarjeta visible sin scroll excesivo */
+}
+
+.inventario-hero {
+    display: flex; /* Encabezado dividido en texto + acciones */
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px; /* Permite respiración entre columnas */
+}
+
+.inventario-hero-text h2 {
+    font-size: 2.8rem; /* Título protagonista */
+    margin: 0;
+    color: var(--inv-text);
+}
+
+.inventario-hero-subtitle {
+    text-transform: uppercase; /* Se ve como etiqueta */
+    letter-spacing: 0.15em; /* Separación amplia entre letras */
+    font-size: 0.85rem;
+    color: #7b75a7; /* Tono lavanda medio */
+    margin: 0 0 4px; /* Separa respecto al título */
+}
+
+.inventario-actions {
+    display: flex;
+    gap: 12px; /* Distancia consistente entre botones */
+}
+
+/* Botones destacados del módulo inventario (heredan colores de .btn) */
+.inventario-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 26px; /* Botón tipo píldora */
     border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-}
-.search-box .search-icon{
-    position: relative; left:34px; color: var(--color-muted); opacity:.9; pointer-events:none;
+    font-size: 1rem;
 }
 
-.inventario-card { display: flex; flex-direction: column; gap: 18px; }
-
-.inventario-tabla-wrapper {
-    border-radius: 18px;
-    border: 1px solid rgba(44,40,77,0.08);
-    box-shadow: 0 12px 28px rgba(44,40,77,0.08);
-    overflow: hidden;
-}
-
-@media (min-width: 992px) {
-    .inventario-card { max-height: calc(100vh - 120px); overflow: hidden; }
-    .inventario-card > * { flex-shrink: 0; }
-    .inventario-tabla-wrapper { flex: 1; min-height: 300px; overflow: auto; }
-}
-
-.inventario-top {
-    display: grid;
-    grid-template-columns: 1fr minmax(260px, 320px) auto;
-    gap: 18px;
+.inventario-search-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap; /* Rompe a segunda fila si no cabe */
     align-items: center;
 }
 
-.inventario-metrics { display: flex; gap: 12px; justify-content: flex-end; }
+.inventario-search {
+    flex: 1 1 320px; /* Crece pero respeta ancho mínimo */
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #c8c1f5; /* Borde lavanda con buena visibilidad */
+    border-radius: 999px;
+    padding: 8px 18px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6); /* Brillo interior */
+}
 
-.metric-card {
-    background: linear-gradient(140deg, rgba(155,89,255,0.12), rgba(255,255,255,0.9));
-    border-radius: 18px;
-    border: 1px solid rgba(155,89,255,0.2);
-    padding: 12px 18px;
-    min-width: 15px;
+.inventario-search-icon {
+    font-size: 1.1rem;
+    margin-right: 10px; /* Espacio antes del input */
+}
+
+.inventario-search input {
+    border: none; /* Aprovecha el borde del contenedor */
+    outline: none;
+    flex: 1; /* Ocupa el resto del buscador */
+    font-size: 1rem;
+    color: var(--inv-text);
+    background: transparent;
+}
+
+.inventario-summary {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap; /* Métricas saltan a una segunda línea */
+}
+
+.inventario-summary-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-}
-.metric-card span { font-size: 13px; color: var(--color-muted); }
-.metric-card strong { font-size: 22px; color: var(--color-primary); }
-.metric-card small { font-size: 11px; color: var(--color-muted); }
-
-.inventario-actions { display: flex; gap: 10px; }
-.inventario-controls { display: flex; justify-content: space-between; gap: 16px; }
-#buscador{ padding: 10px 14px 10px 40px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); box-shadow: 0 4px 12px rgba(0,0,0,0.03); max-width: 520px; width: 60%; }
-.search-box{ display: flex; align-items: center; gap: 8px; width: 100%; }
-
-.tabla-inventario, .ventas-inventario { width: 100%; border-collapse: collapse; border-spacing: 8px; border-radius: 25px; padding: 10px,20px; }
-
-.tabla-inventario th,
-.tabla-inventario td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-.tabla-inventario th { background-color: #f0f0f0; }
-.tabla-inventario td select { width: 100%; }
-.tabla-inventario td a { color: #0077cc; text-decoration: underline; cursor: pointer; }
-
-.categorias-header { display: flex; flex-wrap: wrap; gap: 10px; }
-.categorias-header button {
-    padding: 10px 18px;
-    border-radius: 16px;
-    border: none;
-    background: #ffdd63;
     font-weight: 600;
-    color: #3c3484;
-    cursor: pointer;
-    box-shadow: inset 0 -2px rgba(0,0,0,0.08);
+    color: var(--inv-text);
 }
-.categorias-header button:hover { filter: brightness(0.95); }
 
-.inventario-tabla-wrapper table { width: 100%; border-collapse: collapse; }
-.inventario-card .tabla-inventario th { background: #eef0ff; color: #4a4d9a; }
-.inventario-card .tabla-inventario td { text-align: center; }
-.inventario-card .tabla-inventario td:first-child { text-align: left; }
+.inventario-summary-item span {
+    font-size: 0.9rem;
+    color: #736ba1;
+    margin-bottom: 4px; /* Separa etiqueta del valor */
+}
+
+.inventario-summary-item strong {
+    font-size: 1.4rem; /* Valor principal resaltado */
+}
+
+.inventario-categorias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.inventario-categorias button {
+    padding: 10px 24px;
+    border-radius: 10px;
+    background: var(--inv-yellow);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    color: #4e3610; /* Texto oscuro que combina con amarillo */
+    box-shadow: inset 0 -3px rgba(0,0,0,0.18); /* Sensación de botón físico */
+}
+
+.inventario-categorias button:hover {
+    filter: brightness(1.03); /* Ligero realce al pasar el mouse */
+}
+
+.inventario-tabla-wrapper {
+    border: 2px solid var(--inv-purple);
+    border-radius: 28px;
+    background: #fff;
+    flex: 1; /* Ocupa todo el alto disponible */
+    display: flex;
+    flex-direction: column; /* Header + scroll apilados */
+    overflow: hidden; /* Esquinas redondeadas también dentro */
+}
+
+.inventario-tabla-scroll {
+    flex: 1;
+    overflow-y: auto; /* Activa scroll independiente */
+    max-height: calc(100vh - 240px); /* Mantiene visible el resto del card */
+}
+
+.tabla-inventario {
+    width: 100%;
+    border-collapse: separate; /* Respeta el sticky header */
+    border-spacing: 0;
+    min-width: 960px; /* Evita que las columnas queden muy estrechas */
+}
+
+.tabla-inventario thead th {
+    position: sticky; /* Encabezado fijo durante el scroll */
+    top: 0;
+    background: #e5e7ff;
+    color: var(--inv-text);
+    font-weight: 700;
+    padding: 14px 12px;
+    border-bottom: 2px solid var(--inv-purple);
+    text-transform: capitalize;
+}
+
+.tabla-inventario tbody td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(116, 106, 168, 0.2);
+    color: var(--inv-text);
+    background: rgba(229, 231, 255, 0.45);
+}
+
+.tabla-inventario tbody tr:nth-child(even) td {
+    background: rgba(247, 248, 255, 0.9); /* Alterna filas para mejorar lectura */
+}
+
+.tabla-inventario tbody tr:last-child td {
+    border-bottom: none; /* Quita línea final para terminar limpio */
+}
+
+.tabla-inventario td:first-child {
+    font-weight: 100%; /* Mantiene el peso definido originalmente */
+}
+
+.inventario-img-cell {
+    width: 100px; /* Reserva espacio para las miniaturas */
+}
+
+.inventario-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid #d5d0f2;
+    background: #fff;
+}
+
+.inventario-card .btn,
+.inventario-card .btn-editar,
+.inventario-card .btn-eliminar {
+    border-radius: 10px; /* Botones interiores mantienen el lenguaje visual */
+}
+
+.inventario-card .btn-editar,
+.inventario-card .btn-eliminar {
+    padding: 6px 12px;
+    margin: 2px; /* Espacio entre botones compactos */
+    background-color: #fddc69;
+}
+
+.inventario-card {
+    overflow: hidden; /* Oculta scrolls internos no deseados */
+}
 
 @media (max-width: 1024px) {
-    .inventario-top { grid-template-columns: 1fr; }
-    .inventario-metrics { justify-content: flex-start; }
+    .inventario-card {
+        max-height: none; /* Permite crecer en pantallas medianas */
+    }
+    .inventario-tabla-scroll {
+        max-height: none; /* Deja que la tabla defina su altura */
+    }
+    .inventario-hero {
+        flex-direction: column;
+        align-items: flex-start; /* Título y botones apilados */
+    }
+    .inventario-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
 }
 
-@media (max-width: 768px) {
-    .tabla-inventario { width: 100%; overflow-x: auto; display: block; }
-    .tabla-inventario th,
-    .tabla-inventario td { font-size: 14px; padding: 6px; }
+@media (max-width: 640px) {
+    .inventario-search-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .inventario-summary {
+        flex-direction: column;
+    }
+    .inventario-tabla-wrapper {
+        overflow-x: auto; /* Permite desplazar columnas en móviles */
+    }
+    .inventario-card {
+        padding: 20px; /* Reduce el padding para ganar espacio útil */
+    }
 }

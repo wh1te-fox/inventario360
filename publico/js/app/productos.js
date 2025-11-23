@@ -3,7 +3,19 @@
 // ===============================
 
 window._productosCache = window._productosCache || [];
+const DEFAULT_PRODUCT_IMAGE = 'assets/logoinventario360.png';
 
+// Función helper que convierte un File en un DataURL para enviarlo vía JSON.
+async function fileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Función que recalcula los totales mostrados en las tarjetas del módulo de inventario.
 window.actualizarResumenInventario = function actualizarResumenInventario(productos = window._productosCache || []) {
     const totalArticulosEl = document.getElementById('totalArticulos');
     const costoInventarioEl = document.getElementById('costoInventario');
@@ -43,12 +55,7 @@ window.guardarProducto = async function guardarProducto() {
         let dataUrl = null;
 
         if (fileInput?.files?.[0]) {
-        dataUrl = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(fileInput.files[0]);
-        });
+            dataUrl = await fileToDataUrl(fileInput.files[0]);
         }
 
         const payload = { nombre, descripcion: null, precio, costo, existencia: cantidad, categoria_id: categoria };
@@ -106,10 +113,15 @@ window.renderProductsTable = function renderProductsTable(productos) {
         const fila = document.createElement('tr');
         const ganancia = (Number(p.precio || 0) - Number(p.costo || 0)).toFixed(2);
         const estimado = p.estimated_price ? Number(p.estimated_price).toFixed(2) : '-';
+        const imagenSrc = p.image_url || DEFAULT_PRODUCT_IMAGE;
+        const fechaRef = p.updated_at || p.created_at;
         fila.innerHTML = `
         <td>${p.id}</td>
         <td>${p.nombre}</td>
-        <td>${p.updated_at ? new Date(p.updated_at * 1000).toLocaleDateString() : (p.created_at ? new Date(p.created_at * 1000).toLocaleDateString() : '—')}</td>
+        <td class="inventario-img-cell">
+            <img class="inventario-img" src="${imagenSrc}" alt="Producto ${p.nombre || p.id}">
+        </td>
+        <td>${fechaRef ? new Date(fechaRef * 1000).toLocaleDateString() : '—'}</td>
         <td><input data-id="${p.id}" class="input-existencia" type="number" value="${p.existencia || 0}" style="width:70px"></td>
         <td><input data-id="${p.id}" class="input-precio" type="number" step="0.01" value="${p.precio || 0}" style="width:80px"></td>
         <td>${estimado}</td>
@@ -173,15 +185,31 @@ window.updateProduct = async function updateProduct(id, fields) {
     }
 };
 
+// Función que llena y muestra el modal de edición con los datos del producto seleccionado.
 window.editarProducto = function editarProducto(id) {
     const producto = (window._productosCache || []).find(p => Number(p.id) === Number(id));
     if (!producto) return alert('Producto no encontrado');
+
+    const imagenActual = producto.image_url || DEFAULT_PRODUCT_IMAGE;
 
     abrirModal('Editar Producto', `
         <div class="modal-form-row"><div class="col"><label>Producto:</label><input id="producto" name="nombre" type="text" required></div><div class="col"><label>Categoría:</label><select id="categoria" name="categoria"><option value="">Sin categoría</option></select></div></div>
         <div class="modal-form-row"><div class="col"><label>Cantidad:</label><input id="cantidad" name="cantidad" type="number" value="0"></div><div class="col"><label>Precio:</label><input id="precio" name="precio" type="number" step="0.01" value="0"></div></div>
         <div class="modal-form-row"><div class="col"><label>Costo:</label><input id="costo" name="costo" type="number" step="0.01" value="0"></div></div>
-        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn-action primary">Guardar Cambios</button></div>
+        <div class="modal-form-row">
+            <div class="col">
+                <label>Vista previa:</label>
+                <div class="producto-img-preview">
+                    <img id="previewImagenProducto" src="${imagenActual}" alt="Vista previa del producto">
+                </div>
+            </div>
+            <div class="col">
+                <label>Actualizar imagen:</label>
+                <input id="imagenProducto" name="imagenProducto" type="file" accept="image/*">
+                <small style="display:block; margin-top:6px; color:var(--color-muted);">Deja vacío si quieres conservar la imagen actual.</small>
+            </div>
+        </div>
+        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn btn--primary">Guardar Cambios</button></div>
     `, { submitHandler: 'producto-editar', focusSelector: '#producto' });
 
     const form = document.getElementById('modal-form');
@@ -192,6 +220,8 @@ window.editarProducto = function editarProducto(id) {
     const precioInput = document.getElementById('precio');
     const costoInput = document.getElementById('costo');
     const categoriaSelect = document.getElementById('categoria');
+    const previewImg = document.getElementById('previewImagenProducto');
+    const fileInput = document.getElementById('imagenProducto');
 
     if (nombreInput) nombreInput.value = producto.nombre || '';
     if (cantidadInput) cantidadInput.value = producto.existencia ?? 0;
@@ -208,8 +238,26 @@ window.editarProducto = function editarProducto(id) {
         });
         if (producto.categoria_id) categoriaSelect.value = producto.categoria_id;
     }
+
+    if (previewImg) previewImg.src = imagenActual;
+
+    if (fileInput && previewImg) {
+        fileInput.addEventListener('change', async (event) => {
+            const file = event.target.files?.[0];
+            if (!file) {
+                previewImg.src = imagenActual;
+                return;
+            }
+            try {
+                previewImg.src = await fileToDataUrl(file);
+            } catch (error) {
+                console.error('Error leyendo imagen seleccionada', error);
+            }
+        });
+    }
 };
 
+// Función que toma los valores del modal de edición y envía la actualización al servidor.
 window.actualizarProductoModal = async function actualizarProductoModal() {
     const form = document.getElementById('modal-form');
     if (!form?.dataset?.productId) return alert('Producto no válido');
@@ -225,11 +273,23 @@ window.actualizarProductoModal = async function actualizarProductoModal() {
         costo: parseFloat(document.getElementById('costo').value) || 0
     };
 
+    const fileInput = document.getElementById('imagenProducto');
+    if (fileInput?.files?.[0]) {
+        try {
+            payload.dataUrl = await fileToDataUrl(fileInput.files[0]);
+        } catch (error) {
+            console.error('Error convirtiendo imagen', error);
+            alert('No se pudo leer la imagen seleccionada');
+            return;
+        }
+    }
+
     await updateProduct(form.dataset.productId, payload);
     cerrarModal();
     alert('Producto actualizado');
 };
 
+// Función que elimina un producto tras confirmar y refresca los datos relacionados.
 window.eliminarProducto = async function eliminarProducto(id) {
     if (!confirm('¿Eliminar este producto? Esta acción no se puede deshacer.')) return;
     try {

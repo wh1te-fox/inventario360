@@ -55,7 +55,8 @@
                     <li onclick="mostrarModulo('clientes')">Clientes</li>
                     <li onclick="mostrarModulo('proveedores')">Proveedores</li>
                     <li onclick="mostrarModulo('ajustes')">Ajustes</li>
-                    <button onclick="cerrarSesion('Cerrar sesion')">Cerrar sesión</button>
+                    <!-- Botón para finalizar sesión desde la barra lateral -->
+                    <button class="btn btn--ghost" onclick="cerrarSesion('Cerrar sesion')">Cerrar sesión</button>
                 </ul>
             </nav>
         </aside>
@@ -85,61 +86,65 @@
                     <input type="email" id="correoUsuario" placeholder="tu@email.com">
                     <label>Teléfono:</label>
                     <input type="tel" id="telefonoUsuario" placeholder="8888-8888">
-                    <button onclick="guardarPerfil()">Guardar cambios</button>
+                    <!-- Acción principal del perfil: guarda todos los datos ingresados -->
+                    <button class="btn btn--primary" onclick="guardarPerfil()">Guardar cambios</button>
                 </div>
             </section>
             <!--aqui comiensa el inventario-->
             <section id="inventario" class="modulo activo">
-                <div class="section-card inventario-card">
-                    <div class="inventario-top">
-                        <div>
-                            <p class="section-tag">Control general</p>
+                <div class="inventario-card">
+                    <header class="inventario-hero">
+                        <div class="inventario-hero-text">
+                            <p class="inventario-hero-subtitle">Control general</p>
                             <h2>Inventario</h2>
                         </div>
-                        <div class="inventario-metrics">
-                            <div class="metric-card">
-                                <span>Total productos</span>
-                                <strong id="totalArticulos">0</strong>
-                            </div>
-                            <div class="metric-card">
+                        <div class="inventario-actions">
+                            <button id="btnCrearCategoria" class="btn btn--primary inventario-action-btn" onclick="crearCategorias()">Crear Categoría</button>
+                            <button id="btnCrearProducto" class="btn btn--primary inventario-action-btn" onclick="crearProducto()">Crear Producto</button>
+                        </div>
+                    </header>
+
+                    <div class="inventario-search-row">
+                        <div class="inventario-search">
+                            <span class="inventario-search-icon">🔍</span>
+                            <input type="text" id="buscador" placeholder="Buscar por nombre, código o ID" />
+                        </div>
+                        <div class="inventario-summary">
+                            <div class="inventario-summary-item">
                                 <span>Costo inventario</span>
                                 <strong id="costoInventario">C$0.00</strong>
                             </div>
-                        </div>
-                        <div class="inventario-actions">
-                            <button id="btnCrearCategoria" class="btn-action ghost" onclick="crearCategorias()">Crear Categoría</button>
-                            <button id="btnCrearProducto" class="btn-action primary" onclick="crearProducto()">Crear Producto</button>
-                        </div>
-                    </div>
-
-                    <div class="inventario-controls">
-                        <div class="search-box">
-                            <span class="search-icon">🔍</span>
-                            <input type="text" id="buscador" placeholder="Buscar por nombre, código o ID" />
+                            <div class="inventario-summary-item">
+                                <span>Catida de artilulos</span>
+                                <strong id="totalArticulos">0</strong>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="categoriasHeader" class="categorias-header"></div>
+                    <div id="categoriasHeader" class="categorias-header inventario-categorias"></div>
 
                     <div class="tabla-wrapper inventario-tabla-wrapper">
-                        <table class="tabla-inventario">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Producto</th>
-                                    <th>Última actualización</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio</th>
-                                    <th>Estimado</th>
-                                    <th>Costo</th>
-                                    <th>Ganancia</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaInventarioBody">
-                                <!-- Filas dinámicas -->
-                            </tbody>
-                        </table>
+                        <div class="inventario-tabla-scroll">
+                            <table class="tabla-inventario">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Producto</th>
+                                        <th>Imagen</th>
+                                        <th>Última actualización</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>Estimado</th>
+                                        <th>Costo</th>
+                                        <th>Ganancia</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaInventarioBody">
+                                    <!-- Filas dinámicas -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -153,183 +158,215 @@
             </div>
             <!--aqui comiensa el apartado de ventras-->
             <section id="ventas" class="modulo">
-                <h2>Ventas</h2>
-                <!-- Formulario o historial de ventas -->
-                <div class="ventas-header">
-                    <div class="ventas-inventario">
-                        <h3>Buscar producto</h3>
-                        <input type="text" id="buscadorVentas" placeholder="Buscar por nombre, código o ID (Ventas)" />
-                        <ul id="resultados"></ul>
-                        <table class="ventas-inventario">
-                            <thead>
-                                <tr>
-                                <th>Imagen</th>
-                                <th>Producto</th>
-                                <th>Disponible</th>
-                                <th>Precio</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaventasBody"></tbody><!--filas dinamicas-->
-                        </table>
+                <div class="ventas-layout">
+                    <div class="ventas-panel ventas-panel--catalogo">
+                        <div class="ventas-panel--catalogo-inner">
+                            <div class="ventas-panel-header">
+                                <h2>Nueva venta</h2>
+                                <div class="ventas-search">
+                                    <span class="ventas-search-icon" aria-hidden="true">🔍</span>
+                                    <input type="text" id="buscadorVentas" placeholder="Buscar por nombre, código o ID" />
+                                    <button type="button" class="ventas-search-clear" aria-label="Limpiar búsqueda" onclick="document.getElementById('buscadorVentas').value=''; renderSalesInventory(window._productosCache || []);">×</button>
+                                </div>
+                            </div>
+                            <div id="ventasCategorias" class="ventas-categorias-chips"></div>
+                            <div class="ventas-grid-wrapper">
+                                <div class="ventas-grid" id="tablaventasBody"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="ventas-canasta">
-                        <h3>Canasta de venta</h3>
+                    <div class="ventas-panel ventas-panel--cart">
+                        <div class="ventas-cart-actions">
+                            <button type="button" class="ventas-chip-btn" onclick="abrirModalGasto()">gastos</button>
+                            <button type="button" class="ventas-chip-btn" onclick="vaciarcanasta()">Vaciar canasta</button>
+                        </div>
                         <div class="ventas-cliente-select">
                             <label for="clienteVentaSelect">Cliente (opcional)</label>
                             <select id="clienteVentaSelect">
                                 <option value="">Sin cliente</option>
                             </select>
                         </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio</th>
-                                    <th>Subtotal</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="canastaBody"></tbody>
-                        </table>
-                        <div class="ventas-acciones">
-                            <button onclick="Nuevaventa()">Nueva venta</button>
-                            <button onclick="vaciarcanasta()">Vaciar canasta</button>
-                            <button onclick="terminarventa()">Terminar venta</button>
-                            <button onclick="abrirModalGasto()">Registrar gasto</button>
+                        <div class="ventas-pago-toggle" role="group" aria-label="Modo de pago">
+                            <button type="button" class="ventas-pago-btn is-active" data-mode="contado" onclick="seleccionarModoVenta('contado')">Contado</button>
+                            <button type="button" class="ventas-pago-btn" data-mode="credito" onclick="seleccionarModoVenta('credito')">Crédito</button>
+                        </div>
+                        <p class="ventas-pago-alerta" id="ventasCreditoAviso" hidden>
+                            Selecciona un cliente para registrar venta a crédito.
+                        </p>
+                        <div class="canasta-list" id="canastaBody"></div>
+                        <div class="ventas-total">
+                            <div class="ventas-total-labels">
+                                <span>Total de ventas</span>
+                                <small>Monto de venta</small>
+                            </div>
+                            <strong id="canastaTotal">C$0.00</strong>
+                        </div>
+                        <div class="ventas-footer-actions">
+                            <button type="button" class="btn btn--ghost" onclick="Nuevaventa()">Nueva venta</button>
+                            <button type="button" class="btn btn--primary" onclick="terminarventa()">Finalizar venta</button>
                         </div>
                     </div>
                 </div>                
             </section>
             <!--Aqui comiensa el apartado de movimientos-->
             <section id="Movimientos" class="modulo">
-                <h2>Movimientos</h2>
-                <div class="Movimientos-header">
-                    <label for="fechaBaseMovimientos">Selecciona una fecha base:</label>
-                    <input type="date" id="fechaBaseMovimientos">
-                    <label for="rangoTiempoMovimientos">Rango:</label>
-                    <select id="rangoTiempoMovimientos">
-                        <option value="dia">Día</option>
-                        <option value="semana">Semana</option>
-                        <option value="mes">Mes</option>
-                        <option value="año">Año</option>
-                    </select>
-                        <button onclick="filtrarPorRango()">Buscar</button>
-                        <label for="filterTipo">Tipo:</label>
-                        <select id="filterTipo" aria-label="Filtrar por tipo">
-                            <option value="">Todos</option>
-                            <option value="venta">Venta</option>
-                            <option value="egreso">Egreso</option>
-                            <option value="ajuste">Ajuste</option>
-                            <option value="gasto">Gasto</option>
-                        </select>
-                        <label for="filterProducto">Producto:</label>
-                        <select id="filterProducto" aria-label="Filtrar por producto"><option value="">Todos</option></select>
-                        <button onclick="loadMovimientosUI()">Refrescar</button>
-                        <button onclick="exportMovimientosCSV()">Exportar CSV</button>
-                </div>
-                <div class="movimientos-controles">
-                    <button onclick="mostrarMovimientos('ingresos')">Ingresos</button>
-                    <button onclick="mostrarMovimientos('egresos')">Egresos</button>
-                    <button onclick="mostrarMovimientos('porPagar')">Por pagar</button>
-                    <button onclick="mostrarMovimientos('porCobrar')">Por cobrar</button>
-                </div>
-                <div class="movimientos-tabla">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Tipo</th>
-                                <th>Detalles</th>
-                                <th>Cantidad</th>
-                                <th>Monto</th>
-                                <th>Vinculado</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaMovimientosBody">
-                        <!-- Filas dinámicas -->
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Formulario para agregar productos -->
-            </section>
-            <!--aqui comiensa mi apartado de estadisticas-->
-            <section id="Estadísticas" class="modulo">
-                <div class="section-card stats-card">
-                    <div class="stats-header">
-                        <div>
-                            <p class="section-tag">Resumen</p>
-                            <h2>Estadísticas</h2>
-                        </div>
-                    </div>
+                <div class="movimientos-card">
+                    <div class="movimientos-header-sticky">
+                        <header class="movimientos-hero">
+                            <div class="movimientos-hero-text">
+                                <p class="movimientos-tagline">Seguimiento financiero</p>
+                                <h2>Movimientos</h2>
+                                <p class="mov-vista-actual" id="movVistaActual">Vista Diario</p>
+                            </div>
+                            <div class="movimientos-hero-summary" id="movimientosResumen">
+                                <div class="mov-resumen-item">
+                                    <span>Ingresos</span>
+                                    <strong id="movResumenIngresos">C$0.00</strong>
+                                </div>
+                                <div class="mov-resumen-item">
+                                    <span>Egresos</span>
+                                    <strong id="movResumenEgresos">C$0.00</strong>
+                                </div>
+                            </div>
+                        </header>
 
-                    <div class="stats-focus-row">
-                        <div class="metric-card metric-card--focus">
-                            <span>Total Venta</span>
-                            <strong>C$<span id="totalVentas">0</span></strong>
-                            <small>monto vendido según el rango</small>
-                        </div>
-                        <div class="stats-filter-card">
-                            <span class="stats-filter-card__label">Fecha</span>
-                            <div class="stats-filter-card__controls">
-                                <span class="stats-filter-card__icon" aria-hidden="true">📅</span>
-                                <input type="date" id="fechaBaseEstadisticas">
-                                <select id="rangoTiempoEstadisticas" aria-label="Rango de tiempo para estadísticas">
+                        <div class="movimientos-toolbar">
+                            <div class="mov-toolbar-left">
+                                <div class="mov-pill-chip-group" role="group" aria-label="Rango de tiempo">
+                                    <button type="button" class="mov-chip mov-chip--solid" id="movRangoChip" onclick="cambiarRangoMovimientos()">Vista Diario</button>
+                                    <button type="button" class="mov-chip mov-chip--solid" id="movFechaChip" onclick="abrirSelectorFechaMov()">Hoy</button>
+                                    <button type="button" class="mov-chip mov-chip--icon" aria-label="Cambiar fecha" onclick="abrirSelectorFechaMov()">
+                                        <span aria-hidden="true">📅</span>
+                                    </button>
+                                </div>
+                                <input type="date" id="fechaBaseMovimientos" class="mov-hidden-input" onchange="actualizarFechaMovimientos(this.value)">
+                                <select id="rangoTiempoMovimientos" class="mov-hidden-input" aria-label="Rango de tiempo de movimientos" onchange="actualizarRangoMovimientos(this.value)">
                                     <option value="dia">Día</option>
                                     <option value="semana">Semana</option>
                                     <option value="mes">Mes</option>
                                     <option value="año">Año</option>
                                 </select>
-                                <button class="btn-action stats-filter-card__btn" onclick="filtrarEstadisticas()">Aplicar</button>
+                            </div>
+                            <div class="mov-toolbar-right">
+                                <div class="mov-search-box">
+                                    <span class="mov-search-icon" aria-hidden="true">🔍</span>
+                                    <input type="search" id="buscarMovimientos" placeholder="Buscar movimiento" oninput="filtrarBusquedaMovimientos(this.value)">
+                                    <button type="button" class="mov-search-clear" aria-label="Limpiar búsqueda" onclick="limpiarBusquedaMovimientos()">×</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mov-pill-row movimientos-controles" role="tablist">
+                            <button type="button" class="mov-pill active" data-mov="ingresos" role="tab" aria-selected="true" onclick="mostrarMovimientos('ingresos')">Ingresos</button>
+                            <button type="button" class="mov-pill" data-mov="egresos" role="tab" aria-selected="false" onclick="mostrarMovimientos('egresos')">Egresos</button>
+                            <button type="button" class="mov-pill" data-mov="porCobrar" role="tab" aria-selected="false" onclick="mostrarMovimientos('porCobrar')">Por cobrar</button>
+                            <button type="button" class="mov-pill" data-mov="porPagar" role="tab" aria-selected="false" onclick="mostrarMovimientos('porPagar')">Por pagar</button>
+                        </div>
+
+                    </div>
+
+                    <div class="movimientos-tabla-wrapper">
+                        <div class="movimientos-tabla-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Tipo</th>
+                                        <th>Detalles</th>
+                                        <th>Cantidad</th>
+                                        <th>Monto</th>
+                                        <th>Vinculado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaMovimientosBody">
+                                <!-- Filas dinámicas -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--aqui comiensa mi apartado de estadisticas-->
+            <section id="Estadísticas" class="modulo modulo--full">
+                <div class="section-card stats-card">
+                    <div class="stats-heading-block">
+                        <div class="stats-header">
+                            <div>
+                                <p class="section-tag">Resumen</p>
+                                <h2>Estadísticas</h2>
+                            </div>
+                        </div>
+
+                        <div class="stats-focus-row">
+                            <div class="metric-card metric-card--focus">
+                                <span>Total Venta</span>
+                                <strong>C$<span id="totalVentas">0</span></strong>
+                                <small>monto vendido según el rango</small>
+                            </div>
+                            <div class="stats-filter-card">
+                                <span class="stats-filter-card__label">Fecha</span>
+                                <div class="stats-filter-card__controls">
+                                    <span class="stats-filter-card__icon" aria-hidden="true">📅</span>
+                                    <input type="date" id="fechaBaseEstadisticas">
+                                    <select id="rangoTiempoEstadisticas" aria-label="Rango de tiempo para estadísticas">
+                                        <option value="dia">Día</option>
+                                        <option value="semana">Semana</option>
+                                        <option value="mes">Mes</option>
+                                        <option value="año">Año</option>
+                                    </select>
+                                    <button class="btn btn--ghost stats-filter-card__btn" onclick="filtrarEstadisticas()">Aplicar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="stats-metrics">
-                        <div class="metric-card">
-                            <span>Ganancia estimada</span>
-                            <strong>C$<span id="gananciaTotal">0</span></strong>
-                            <small>utilidad después de costos</small>
+                    <div class="stats-content-block">
+                        <div class="stats-metrics">
+                            <div class="metric-card">
+                                <span>Ganancia estimada</span>
+                                <strong>C$<span id="gananciaTotal">0</span></strong>
+                                <small>utilidad después de costos</small>
+                            </div>
+                            <div class="metric-card">
+                                <span>Costo total</span>
+                                <strong>C$<span id="costoTotal">0</span></strong>
+                                <small>inversión del stock vendido</small>
+                            </div>
+                            <div class="metric-card">
+                                <span>Productos vendidos</span>
+                                <strong><span id="productosVendidos">0</span></strong>
+                                <small>unidades totales</small>
+                            </div>
                         </div>
-                        <div class="metric-card">
-                            <span>Costo total</span>
-                            <strong>C$<span id="costoTotal">0</span></strong>
-                            <small>inversión del stock vendido</small>
-                        </div>
-                        <div class="metric-card">
-                            <span>Productos vendidos</span>
-                            <strong><span id="productosVendidos">0</span></strong>
-                            <small>unidades totales</small>
-                        </div>
-                    </div>
 
-                    <div class="stats-layout">
-                        <div class="stats-charts-row">
-                            <div class="chart-card stats-chart stats-chart--bar">
-                                <div class="chart-title">Detalles de ventas</div>
-                                <canvas id="salesBarChart"></canvas>
+                        <div class="stats-layout">
+                            <div class="stats-charts-row">
+                                <div class="chart-card stats-chart stats-chart--bar">
+                                    <div class="chart-title">Detalles de ventas</div>
+                                    <canvas id="salesBarChart"></canvas>
+                                </div>
+                                <div class="chart-card stats-chart stats-chart--pie">
+                                    <div class="chart-title">Distribución por producto</div>
+                                    <canvas id="salesPieChart"></canvas>
+                                </div>
                             </div>
-                            <div class="chart-card stats-chart stats-chart--pie">
-                                <div class="chart-title">Distribución por producto</div>
-                                <canvas id="salesPieChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="stats-table stats-table--wide">
-                            <div class="chart-title">Detalles de productos vendidos</div>
-                            <div class="tabla-wrapper">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Periodo</th>
-                                            <th>Producto</th>
-                                            <th>Cantidad</th>
-                                            <th>Precio</th>
-                                            <th>Costo</th>
-                                            <th>Ganancia</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tablaEstadisticasBody"></tbody>
-                                </table>
+                            <div class="stats-table stats-table--wide">
+                                <div class="chart-title">Detalles de productos vendidos</div>
+                                <div class="tabla-wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Periodo</th>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                                <th>Costo</th>
+                                                <th>Ganancia</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tablaEstadisticasBody"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -337,39 +374,67 @@
             </section>
             <!--Aqui comiensa el apartado para los clientes del usuario-->
             <section id="clientes" class="modulo">
-                <h2>Clientes</h2>
-                <div class="resumen-grid">
-                    <div class="resumen-card">
-                        <span class="resumen-label">Clientes registrados</span>
-                        <strong class="resumen-value" id="totalClientesResumen">0</strong>
+                <div class="contact-card">
+                    <div class="contact-card__header">
+                        <div>
+                            <p class="section-tag">Contactos</p>
+                            <h2>Clientes</h2>
+                        </div>
+                        <button type="button" class="btn btn--primary" onclick="crearCliente()">Crear cliente</button>
                     </div>
-                    <div class="resumen-card">
-                        <span class="resumen-label">Total por cobrar</span>
-                        <strong class="resumen-value" id="totalPorCobrarResumen">C$0.00</strong>
+
+                    <div class="contact-card__toolbar">
+                        <div class="contact-search" aria-live="polite">
+                            <span class="contact-search__icon" aria-hidden="true">🔍</span>
+                            <input type="text" id="nuevoCliente" placeholder="Buscar o agregar cliente" title="Escribe un nombre y presiona Enter para agregar rápido" onkeydown="if(event.key==='Enter'){agregarCliente();}">
+                            <button type="button" class="contact-search__clear" aria-label="Limpiar" onclick="document.getElementById('nuevoCliente').value=''; document.getElementById('nuevoCliente').focus();">×</button>
+                        </div>
+                        <div class="contact-metrics">
+                            <div class="contact-pill">
+                                <span>Total de clientes</span>
+                                <strong id="totalClientesResumen">0</strong>
+                            </div>
+                            <div class="contact-pill">
+                                <span>Total por cobrar</span>
+                                <strong id="totalPorCobrarResumen">C$0.00</strong>
+                            </div>
+                        </div>
                     </div>
+
+                    <div id="listaClientes" class="contact-table"></div>
                 </div>
-                <input type="text" id="nuevoCliente" placeholder="Nombre del cliente">
-                <button onclick="agregarCliente()">Agregar rápido</button>
-                <button type="button" class="btn-action" onclick="crearCliente()">Formulario completo</button>
-                <div id="listaClientes" class="tabla-wrapper"></div>
             </section>
             <!--Aqui comiensa el apartado para los proveedores del usario-->
             <section id="proveedores" class="modulo">
-                <h2>Proveedores</h2>
-                <div class="resumen-grid">
-                    <div class="resumen-card">
-                        <span class="resumen-label">Proveedores registrados</span>
-                        <strong class="resumen-value" id="totalProveedoresResumen">0</strong>
+                <div class="contact-card">
+                    <div class="contact-card__header">
+                        <div>
+                            <p class="section-tag">Contactos</p>
+                            <h2>Proveedores</h2>
+                        </div>
+                        <button type="button" class="btn btn--primary" onclick="crearProveedor()">Crear proveedor</button>
                     </div>
-                    <div class="resumen-card">
-                        <span class="resumen-label">Total a pagar</span>
-                        <strong class="resumen-value" id="totalPorPagarResumen">C$0.00</strong>
+
+                    <div class="contact-card__toolbar">
+                        <div class="contact-search" aria-live="polite">
+                            <span class="contact-search__icon" aria-hidden="true">🔍</span>
+                            <input type="text" id="nuevoProveedor" placeholder="Buscar o agregar proveedor" title="Escribe un nombre y presiona Enter para agregar rápido" onkeydown="if(event.key==='Enter'){agregarProveedor();}">
+                            <button type="button" class="contact-search__clear" aria-label="Limpiar" onclick="document.getElementById('nuevoProveedor').value=''; document.getElementById('nuevoProveedor').focus();">×</button>
+                        </div>
+                        <div class="contact-metrics">
+                            <div class="contact-pill">
+                                <span>Total de proveedores</span>
+                                <strong id="totalProveedoresResumen">0</strong>
+                            </div>
+                            <div class="contact-pill">
+                                <span>Total por pagar</span>
+                                <strong id="totalPorPagarResumen">C$0.00</strong>
+                            </div>
+                        </div>
                     </div>
+
+                    <div id="listaProveedores" class="contact-table"></div>
                 </div>
-                <input type="text" id="nuevoProveedor" placeholder="Nombre del proveedor">
-                <button onclick="agregarProveedor()">Agregar rápido</button>
-                <button type="button" class="btn-action" onclick="crearProveedor()">Formulario completo</button>
-                <div id="listaProveedores" class="tabla-wrapper"></div>
             </section>
             <!--Aqui podemos hacer algunos cambios en la app-->
             <section id="ajustes" class="modulo">
@@ -390,9 +455,10 @@
                     <input type="checkbox" id="notificaciones"> Activar alertas
                 </div>
                 <div class="ajustes-grupo">
-                    <button onclick="guardarAjustes()">Guardar ajustes</button>
-                    <button onclick="exportarDatos()">Exportar datos</button>
-                    <button onclick="confirmarReset()">Restablecer sistema</button>
+                    <!-- Grupo de acciones del módulo de ajustes -->
+                    <button class="btn btn--primary" onclick="guardarAjustes()">Guardar ajustes</button>
+                    <button class="btn" onclick="exportarDatos()">Exportar datos</button>
+                    <button class="btn btn--ghost" onclick="confirmarReset()">Restablecer sistema</button>
                 </div>
             </section>
         </main>

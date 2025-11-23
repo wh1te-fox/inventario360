@@ -1,3 +1,4 @@
+// Middleware genérico que comparte validaciones para login y registro, aplicando reglas extra en /registro.
 module.exports = (req, res, next) => {
     const { username, password, email, telefono } = req.body;
      // Validación común

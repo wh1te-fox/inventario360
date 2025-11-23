@@ -3,6 +3,8 @@
 // ===============================
 
 // --- Navegación entre módulos ---
+// Cambia la vista activa y dispara las recargas necesarias para cada módulo
+// Función central que muestra el módulo solicitado y lanza las cargas asociadas.
 window.mostrarModulo = function(nombreModulo) {
     // Ocultar todos los módulos
     document.querySelectorAll('.modulo').forEach(sec => {
@@ -62,6 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Normalizar y encapsular handlers definidos con atributo `onclick`
 // Esto evita que errores en ejecución de un handler rompan otros scripts.
+// También sirve como documentación central de las acciones inline del HTML
+// Función que reemplaza atributos onclick inline por listeners controlados con manejo de errores.
 function normalizeInlineOnclicks(){
     try{
         const els = Array.from(document.querySelectorAll('[onclick]'));
@@ -91,6 +95,7 @@ function normalizeInlineOnclicks(){
 document.addEventListener('DOMContentLoaded', () => normalizeInlineOnclicks());
 
 // --- Acciones internas del inventario ---
+// Abre el modal para crear un nuevo producto con todos sus campos
 window.crearProducto = function() {
     // Contenido del modal para crear producto
     abrirModal('Crear Producto', `
@@ -98,20 +103,22 @@ window.crearProducto = function() {
         <div class="modal-form-row"><div class="col"><label>Cantidad:</label><input id="cantidad" name="cantidad" type="number" value="0"></div><div class="col"><label>Precio:</label><input id="precio" name="precio" type="number" step="0.01" value="0"></div></div>
         <div class="modal-form-row"><div class="col"><label>Costo:</label><input id="costo" name="costo" type="number" step="0.01" value="0"></div></div>
         <div class="modal-form-row"><div class="col"><label>Imagen (opcional):</label><input id="imagenProducto" name="imagenProducto" type="file" accept="image/*"></div></div>
-        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn-action primary">Guardar Producto</button></div>
+        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn btn--primary">Guardar Producto</button></div>
     `, { submitHandler: 'producto' });
     // Cargar opciones de categorías dentro del select del modal
     setTimeout(() => { try { window.cargarCategorias(); const sel = document.getElementById('categoria'); if (sel) { sel.innerHTML = '<option value="">Sin categoría</option>'; window.categorias.forEach(c=> { const opt = document.createElement('option'); opt.value = c.id; opt.textContent = c.nombre; sel.appendChild(opt); }); } } catch(e){} }, 50);
 };
 
+// Modal rápido para registrar una nueva categoría de producto
 window.crearCategorias = function() {
     abrirModal('Crear Categoría', `
         <label>Nombre de categoría:</label>
         <input id="nombreCategoria" name="nombre" type="text" required>
-        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn-action">Guardar Categoría</button></div>
+        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn">Guardar Categoría</button></div>
     `, { submitHandler: 'categoria' });
 };
 
+// Muestra en un modal la lista de categorías existentes
 window.verCategorias = function() {
     abrirModal('Categorías', `
         <ul id="listaCategorias">
@@ -120,26 +127,29 @@ window.verCategorias = function() {
     `);
 };
 
+// Formulario modal con los campos necesarios para registrar un cliente
 window.crearCliente = function() {
     abrirModal('Crear Cliente', `
         <div class="modal-form-row"><div class="col"><label>Nombre:</label><input id="nombreCliente" name="nombre" type="text" required></div></div>
         <div class="modal-form-row"><div class="col"><label>Teléfono:</label><input id="telefonoCliente" name="telefono" type="text" required></div></div>
         <div class="modal-form-row"><div class="col"><label>Dirección:</label><input id="direccionCliente" name="direccion" type="text"></div></div>
         <div class="modal-form-row"><div class="col"><label>Correo:</label><input id="correoCliente" name="correo" type="email"></div></div>
-        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn-action">Guardar Cliente</button></div>
+        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn">Guardar Cliente</button></div>
     `, { submitHandler: 'cliente' });
 };
 
+// Modal para dar de alta un proveedor con datos básicos de contacto
 window.crearProveedor = function() {
     abrirModal('Crear Proveedor', `
         <div class="modal-form-row"><div class="col"><label>Nombre:</label><input id="nombreProveedor" name="nombre" type="text" required></div></div>
         <div class="modal-form-row"><div class="col"><label>Teléfono:</label><input id="telefonoProveedor" name="telefono" type="text" required></div></div>
         <div class="modal-form-row"><div class="col"><label>Dirección:</label><input id="direccionProveedor" name="direccion" type="text"></div></div>
         <div class="modal-form-row"><div class="col"><label>Correo:</label><input id="correoProveedor" name="correo" type="email"></div></div>
-        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn-action">Guardar Proveedor</button></div>
+        <div style="text-align:right; margin-top:10px;"><button type="submit" class="btn">Guardar Proveedor</button></div>
     `, { submitHandler: 'proveedor' });
 };
 
+// Tabla de handlers que asocia cada modal con la función que procesa su submit
 const MODAL_HANDLERS = {
     producto: () => window.guardarProducto && window.guardarProducto(),
     categoria: () => window.guardarCategoria && window.guardarCategoria(),
@@ -149,6 +159,7 @@ const MODAL_HANDLERS = {
     gasto: () => window.guardarGasto && window.guardarGasto()
 };
 
+// Intercepta los envíos del formulario del modal y redirige al handler configurado
 document.addEventListener('submit', async (e) => {
     const form = e.target;
     if (!form || form.id !== 'modal-form') return;

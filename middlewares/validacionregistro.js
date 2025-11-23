@@ -1,3 +1,4 @@
+// Middleware que valida y normaliza el payload de registro (usuario, contraseña, email y teléfono).
 module.exports = (req, res, next) => {
     const { username, password, email } = req.body;
     let { telefono } = req.body || {};

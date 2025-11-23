@@ -24,6 +24,9 @@ window.loadClientes = async function loadClientes() {
     }
 };
 
+/**
+ * Actualiza los indicadores de totales de clientes y saldos por cobrar en el dashboard.
+ */
 window.actualizarResumenClientes = function actualizarResumenClientes(resumen = {}) {
     const totalClientesEl = document.getElementById('totalClientesResumen');
     const totalCobrarEl = document.getElementById('totalPorCobrarResumen');
@@ -158,6 +161,7 @@ window.guardarCliente = async function guardarCliente() {
     }
 };
 
+// Función interna que abre prompts rápidos para ajustar los datos de un cliente y guarda los cambios.
 async function editarCliente(cliente) {
     const nuevoNombre = prompt('Nombre', cliente.nombre || '') || '';
     if (!nuevoNombre.trim()) return alert('Nombre es obligatorio');
@@ -178,6 +182,7 @@ async function editarCliente(cliente) {
     }
 }
 
+// Función interna que elimina un cliente tras confirmación y refresca la tabla.
 async function eliminarCliente(id) {
     if (!confirm('¿Eliminar cliente?')) return;
     try {
@@ -193,6 +198,7 @@ async function eliminarCliente(id) {
     }
 }
 
+// Función que vuelve a poblar el select usado en ventas para escoger cliente a crédito.
 function refrescarSelectorClientes() {
     const select = document.getElementById('clienteVentaSelect');
     if (!select) return;
@@ -206,5 +212,8 @@ function refrescarSelectorClientes() {
     });
     if (current && select.querySelector(`option[value="${current}"]`)) {
         select.value = current;
+    }
+    if (typeof window.actualizarAvisoCredito === 'function') {
+        window.actualizarAvisoCredito();
     }
 }

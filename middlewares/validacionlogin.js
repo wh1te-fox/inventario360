@@ -1,3 +1,4 @@
+// Middleware que valida que el payload de login incluya usuario y contraseña con formato mínimo.
 module.exports = (req, res, next) => {
     const { username, password } = req.body;
     if (!username || typeof username !== 'string' || username.trim() === '') {

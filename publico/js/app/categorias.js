@@ -114,4 +114,59 @@ window.renderizarCategoriasHeader = function renderizarCategoriasHeader() {
         btn.onclick = () => filtrarPorCategoria(cat.id);
         cont.appendChild(btn);
     });
+
+    renderizarCategoriasVentas();
 };
+
+/**
+ * Renderiza los chips de categorías en la vista de ventas para filtrar el inventario rápido.
+ */
+window.renderizarCategoriasVentas = function renderizarCategoriasVentas() {
+    const cont = document.getElementById('ventasCategorias');
+    if (!cont) return;
+    cont.innerHTML = '';
+
+    const crearBtn = (label, value) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ventas-chip-btn';
+        btn.textContent = label;
+        btn.dataset.categoria = value == null ? '' : String(value);
+        btn.addEventListener('click', () => window.filtrarVentasPorCategoria(value == null ? null : value));
+        cont.appendChild(btn);
+        return btn;
+    };
+
+    crearBtn('Todas', null);
+    categorias.forEach(cat => crearBtn(cat.nombre, cat.id));
+    marcarCategoriaVentasActiva(null);
+};
+
+/**
+ * Aplica un filtro de categoría sobre el inventario mostrado en ventas y marca el chip activo.
+ */
+window.filtrarVentasPorCategoria = function filtrarVentasPorCategoria(categoriaId) {
+    const productos = window._productosCache || [];
+    const filtrados = categoriaId == null
+        ? productos
+        : productos.filter(p => Number(p.categoria_id) === Number(categoriaId));
+    if (typeof window.renderSalesInventory === 'function') {
+        window.renderSalesInventory(filtrados);
+    }
+    marcarCategoriaVentasActiva(categoriaId);
+};
+
+// Función interna que aplica la clase 'is-active' al chip correspondiente al filtro actual.
+function marcarCategoriaVentasActiva(categoriaId) {
+    const chips = document.querySelectorAll('#ventasCategorias button');
+    chips.forEach(btn => {
+        const value = btn.dataset.categoria || '';
+        const isAll = value === '';
+        const matches = !isAll && categoriaId != null ? Number(value) === Number(categoriaId) : isAll && (categoriaId == null || categoriaId === '');
+        if (matches) {
+            btn.classList.add('is-active');
+        } else {
+            btn.classList.remove('is-active');
+        }
+    });
+}

@@ -1,99 +1,155 @@
 /* ===============================
     Globals & Resets
    =============================== */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap'); /* Carga las dos familias base utilizadas en toda la app */
 
 :root{
-  /* colores */
-    --color-primary: #2c284d;
-    --color-primary-2: #382a53;
-    --color-accent: #9b59ff;
-    --color-cta: #fea43f;
-    --color-text: #2f2d5c;
-    --color-muted: #8a86a9;
-    --bg: #f4f4f4;
-    --surface: #ffffff;
-    --border: #e6e4ef;
-    --shadow: rgba(44,40,77,0.06);
+    /* colores (alineados con el login) */
+        --color-primary: #2c284d; /* Azul corporativo principal */
+        --color-primary-2: #2e2a4f; /* Variante más profunda para fondos */
+        --color-accent: #ffbe70; /* Detalles suaves en naranja */
+        --color-cta: #fea43f; /* Botones de llamada a la acción */
+        --color-text: #2c284d; /* Color base para textos */
+        --color-muted: #2e2a4f; /* Textos secundarios */
+    --bg: #f4f4f4; /* Fondo general gris claro */
+    --surface: #ffffff; /* Lienzo de tarjetas y modales */
+    --border: #e6e4ef; /* Líneas divisorias suaves */
+    --shadow: rgba(44,40,77,0.06); /* Sombras estándar */
 
   /* tipografías */
-    --font-ui: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    --font-heading: 'Playfair Display', serif;
+    --font-ui: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; /* Fuente sans para interfaz */
+    --font-heading: 'Playfair Display', serif; /* Fuente serif para títulos */
 
   /* medidas */
-    --radius-sm: 8px;
-    --radius-md: 14px;
-    --spacing-xs: 6px;
-    --spacing-sm: 10px;
-    --spacing-md: 16px;
-    }
-
-body{
-    font-family: var(--font-ui);
-    background-color: var(--bg);
-    color: var(--color-text);
-    margin: 0;
-    padding: 0;
+    --radius-sm: 8px; /* Bordes suaves estándar */
+    --radius-md: 14px; /* Versión algo más redondeada */
+    --spacing-xs: 6px; /* Espaciado fino reutilizable */
+    --spacing-sm: 10px; /* Espaciado corto */
+    --spacing-md: 16px; /* Espaciado medio */
 }
+
+/* Reglas base del documento */
+body{
+    font-family: var(--font-ui); /* Usa la fuente sans por defecto */
+    background-color: var(--bg); /* Fondo gris claro */
+    color: var(--color-text); /* Texto en morado profundo */
+    margin: 0; /* Quita márgenes de navegador */
+    padding: 0; /* Quita relleno */
+}
+
+/* Reset genérico para todos los elementos */
 *
 {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    scroll-behavior: smooth;
+    box-sizing: border-box; /* Incluye borde en el cálculo de tamaño */
+    margin: 0; /* Normaliza márgenes */
+    padding: 0; /* Normaliza rellenos */
+    scroll-behavior: smooth; /* Desplazamiento suave en anclas */
 }
+
+/* Texto base de párrafos */
 p{
-    color: var(--color-text);
-    font-size: 16px;
-    line-height: 1.6;
+    color: var(--color-text); /* Mismo color que el body */
+    font-size: 16px; /* Tamaño legible estándar */
+    line-height: 1.6; /* Alto de línea relajado */
 }
 
-label{ display:block; margin-bottom:6px; color:var(--color-muted); font-size:13px }
+/* Etiquetas de formularios */
+label{
+    display:block; /* Ocupar toda la línea encima del input */
+    margin-bottom:6px; /* Separación respecto al control */
+    color:var(--color-muted); /* Gris violáceo para texto auxiliar */
+    font-size:13px; /* Tamaño discreto */
+}
+
+/* Estilos compartidos por inputs y selects */
 input[type="text"], input[type="number"], input[type="email"], input[type="tel"], select, textarea, .modal-form-control{
-    width:100%;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    font-family: var(--font-ui);
-    color: var(--color-text);
-    box-shadow: inset 0 1px 0 rgba(0,0,0,0.02);
+    width:100%; /* Ocupan el ancho del contenedor */
+    padding: 10px 12px; /* Relleno interno cómodo */
+    border: 1px solid var(--border); /* Borde gris suave */
+    border-radius: var(--radius-md); /* Bordes redondeados */
+    background: var(--surface); /* Fondo blanco limpio */
+    font-family: var(--font-ui); /* Consistencia con el resto de la UI */
+    color: var(--color-text); /* Texto morado oscuro */
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.02); /* Resalta el borde interior */
 }
+
+/* Resalta los campos al enfocarlos */
 input:focus, select:focus, textarea:focus{
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 4px 18px rgba(155,89,255,0.08);
+    outline: none; /* Quita contorno azul del navegador */
+    border-color: var(--color-primary); /* Usa el azul corporativo */
+    box-shadow: 0 4px 18px rgba(71,82,174,0.2); /* Brillo suave exterior */
 }
 
+/* Botón CTA clásico previo al sistema .btn */
 button.btn-primary{
-    background: var(--color-cta);
-    color: var(--color-primary);
-    border: 2px solid var(--color-primary);
-    padding: 10px 16px;
-    border-radius: 999px;
-    cursor: pointer;
-    font-weight:600;
+    background: var(--color-cta); /* Fondo naranja */
+    color: var(--color-primary); /* Texto azul */
+    border: 2px solid var(--color-primary); /* Borde contrastante */
+    padding: 10px 16px; /* Área táctil amplia */
+    border-radius: 999px; /* Forma de píldora */
+    cursor: pointer; /* Indica interactividad */
+    font-weight:600; /* Texto destacado */
 }
-button.btn-primary:hover{ background: var(--color-primary); color: var(--color-cta); border-color: var(--color-cta); transform: translateY(-2px) }
 
-.file-preview{ display:flex; gap:12px; align-items:center }
-.file-preview img{ width:72px; height:72px; object-fit:cover; border-radius:8px; border:1px solid var(--border) }
+/* Efecto hover del botón clásico */
+button.btn-primary:hover{
+    background: var(--color-primary); /* Invierte colores */
+    color: var(--color-cta);
+    border-color: var(--color-cta);
+    transform: translateY(-2px); /* Sutil elevación */
+}
 
-/* Botones genéricos */
-.btn-action{ padding:8px 14px; border-radius:20px; border:2px solid var(--color-primary); background:var(--surface); color:var(--color-primary); font-weight:600; cursor:pointer }
-.btn-action.primary{ background:var(--color-cta); color:var(--color-primary); border-color:var(--color-primary) }
-.btn-action.ghost { background: transparent; border-color: rgba(44,40,77,0.3); color: var(--color-primary); }
-.btn-action:hover{ filter:brightness(.98) }
+/* Vista previa de archivos subidos */
+.file-preview{
+    display:flex; /* Miniatura + texto lado a lado */
+    gap:12px; /* Espacio entre elementos */
+    align-items:center; /* Alineación vertical */
+}
+.file-preview img{
+    width:72px; /* Tamaño fijo para previews */
+    height:72px;
+    object-fit:cover; /* Recorta la imagen sin deformar */
+    border-radius:8px; /* Esquinas suaves */
+    border:1px solid var(--border); /* Marco claro */
+}
+
+/* Botones genéricos (unificados) */
+.btn {
+    padding: 10px 18px; /* Relleno consistente */
+    border-radius: 999px; /* Forma de píldora como en login */
+    border: 2px solid var(--color-primary); /* Borde azul */
+    background: var(--surface); /* Fondo claro */
+    color: var(--color-primary); /* Texto azul */
+    font-weight: 600; /* Texto destacado */
+    cursor: pointer; /* Indica acción */
+    transition: transform .12s, box-shadow .12s, background .12s, color .12s; /* Animación suave */
+}
+.btn--primary {
+    background: var(--color-cta); /* Naranja corporativo */
+    color: var(--color-primary); /* Texto azul */
+    box-shadow: 0 8px 20px rgba(71,82,174,0.15); /* Sombra según paleta */
+}
+.btn--ghost {
+    background: transparent; /* Botón hueco */
+    border-color: rgba(71,82,174,0.35); /* Borde tenue en azul */
+    color: var(--color-primary);
+}
+.btn:hover{
+    transform: translateY(-2px); /* Leve elevación */
+    background: var(--color-primary);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(71,82,174,0.25);
+}
 
 /* Inputs dentro del modal */
     .modal-contenido form button,
-    .modal-contenido form .btn-action{
-    display:inline-block;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border: 2px solid var(--color-primary);
-    background: var(--color-cta);
-    color: var(--color-primary);
-    cursor:pointer;
-    font-weight:600;
+    .modal-contenido form .btn{
+    display:inline-block; /* Permite alinear botones en fila */
+    padding: 10px 14px; /* Mantiene consistencia con .btn */
+    border-radius: 999px; /* Forma redondeada */
+    border: 2px solid transparent; /* Borde limpio */
+    background: var(--color-cta); /* Usa el naranja CTA */
+    color: var(--color-primary); /* Texto azul */
+    cursor:pointer; /* Señala que es accionable */
+    font-weight:600; /* Texto destacado */
 }

@@ -1,70 +1,70 @@
 /* === RESET GLOBAL === */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Times New Roman', Times, serif;
-    scroll-behavior: smooth;
+    box-sizing: border-box; /* Incluye bordes en el cálculo del ancho */
+    margin: 0; /* Elimina márgenes por defecto */
+    padding: 0; /* Elimina rellenos por defecto */
+    font-family: 'Times New Roman', Times, serif; /* Tipografía clásica pedida */
+    scroll-behavior: smooth; /* Desplazamiento suave al navegar */
 }
 
 body {
-    background-color: #f4f4f4;
+    background-color: #f4f4f4; /* Gris claro que enmarca la tarjeta */
 }
 
 /* === TIPOGRAFÍA === */
 p {
-    color: #4752ae;
+    color: #4752ae; /* Azul corporativo */
     font-size: 20px;
-    line-height: 2.0;
+    line-height: 2.0; /* Amplia espacio para lectura cómoda */
 }
 
 h1 {
-    font-size: 60px;
+    font-size: 60px; /* Título principal grande */
     text-align: center;
-    color: #4752ae;
-    padding: 20px;
+    color: #2e2a4f;
+    padding: 20px; /* Evita que choque con otros elementos */
 }
 
 h2 {
     font-size: 30px;
     text-align: center;
-    color: #4752ae;
-    margin-bottom: 20px;
+    color: #2e2a4f;
+    margin-bottom: 20px; /* Separa título secundario del formulario */
 }
 
 /* === ENCABEZADO === */
 .encabezado {
-    display: flex;
-    justify-content: space-between;
+    display: flex; /* Distribuye bienvenida + logotipo + formulario */
+    justify-content: space-between; /* Empuja bloques a extremos */
     align-items: center;
-    padding: 40px;
-    gap: 40px;
-    background-color: #fff;
+    padding: 40px; /* Respiración alrededor del bloque */
+    gap: 40px; /* Espacio entre columnas */
+    background-color: #fff; /* Contraste frente al body gris */
 }
 
 .encabezado h1,
 .texto-bienvenida p,
 .texto-bienvenida img {
     text-align: center;
-    margin: 0 auto;
+    margin: 0 auto; /* Centra dentro de su contenedor */
 }
 
 .texto-bienvenida {
-    font-size: 90px;
+    font-size: 90px; /* Mensaje gigante estilo hero */
     text-align: center;
-    color: #4752ae;
+    color: #2e2a4f;
     padding: 20px;
 }
 
 .texto-bienvenida img {
-    width: 70%;
-    height: auto;
-    margin-bottom: 20px;
+    width: 70%; /* Imagen escala respecto al contenedor */
+    height: auto; /* Conserva proporciones */
+    margin-bottom: 20px; /* Deja espacio con el texto inferior */
 }
 
 /* === FORMULARIOS === */
 .formulario {
-    display: none;
+    display: none; /* Sólo se muestra la tarjeta activa */
     width: 30%;
     margin: auto;
     padding: 02%;
@@ -72,12 +72,12 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 25px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
-    transition: all 1.5s ease;
+    transition: all 1.5s ease; /* Anima el cambio de visibilidad */
 }
 
 .formulario.activo {
     display: block;
-    animation: fadeIn 1.5s ease forwards;
+    animation: fadeIn 1.5s ease forwards; /* Aparece con deslizamiento suave */
 }
 
 @keyframes fadeIn {
@@ -86,10 +86,10 @@ h2 {
 }
 
 .formulario label {
-    display: block;
+    display: block; /* Cada etiqueta ocupa su línea */
     margin-bottom: 15px;
     font-weight: bold;
-    color: #4752ae;
+    color: #2e2a4f;
 }
 
 .formulario input {
@@ -99,13 +99,13 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s; /* Indica foco visualmente */
 }
 
 .formulario input:focus {
-    border-color: #4752ae;
+    border-color: #2e2a4f;
     outline: none;
-    box-shadow: 0 0 5px rgba(71, 82, 174, 0.4);
+    box-shadow: 0 0 5px rgba(46, 42, 79, 0.4);
 }
 
 .formulario button {
@@ -113,18 +113,18 @@ h2 {
     width: 60%;
     margin: 20px auto 15px auto;
     padding: 10px;
-    background-color: #fea43f;
+    background-color: #fea43f; /* Botón dorado */
     color: #4752ae;
     border: 2px solid #4752ae;
     border-radius: 25px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; /* Añade feedback al hover */
 }
 
 .formulario button:hover {
     background-color: #4752ae;
     color: #fea43f;
-    border-color: #fea43f;
+    border-color: #fea43f; /* Efecto inverso al pasar el mouse */
 }
 
 /* === OPCIONES DE NAVEGACIÓN === */
@@ -137,7 +137,7 @@ h2 {
 .opciones a {
     color: #4752ae;
     text-decoration: none;
-    transition: text-decoration 0.3s;
+    transition: text-decoration 0.3s; /* Desaparece/ aparece el subrayado suavemente */
 }
 
 .opciones a:hover {
@@ -173,16 +173,16 @@ h2 {
     font-size: 0.9em;
     margin-top: 10px;
     margin-bottom: 10px;
-    display: none;
+    display: none; /* Sólo aparece cuando hay mensajes */
     transition: all 0.3s ease;
 }
 
 .alerta.valido {
-    color: #28a745;
+    color: #28a745; /* Verde para confirmaciones */
 }
 
 .alerta.invalido {
-    color: #dc3545;
+    color: #dc3545; /* Rojo para errores */
 }
 
 .input-valido {
@@ -198,7 +198,7 @@ h2 {
 /* === RESPONSIVE  QUE PUEDA ADACTARSE A DIFERNTES TAMAÑOS DE PANTALLAS === */
 @media (max-width: 768px) {
     .encabezado {
-        flex-direction: column;
+        flex-direction: column; /* Elementos apilados en pantallas pequeñas */
         text-align: center;
     }
 
@@ -209,7 +209,7 @@ h2 {
     }
 
     h1 {
-        font-size: 40px;
+        font-size: 40px; /* Título se reduce para caber */
     }
 
     .formulario h2 {
@@ -217,11 +217,11 @@ h2 {
     }
 
     .formulario button {
-        width: 100%;
+        width: 100%; /* Botón ocupa toda la tarjeta */
     }
 
     .formulario label,
     .formulario input {
-        text-align: center;
+        text-align: center; /* Mantiene estética centralizada */
     }
 }

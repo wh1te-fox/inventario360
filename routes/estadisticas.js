@@ -7,12 +7,31 @@ const router = express.Router();
 const db = require('../db');
 
 const RANGE_CONFIG = {
-    dia: { segments: 7 },
-    semana: { segments: 6 },
-    mes: { segments: 6 },
+    dia: { segments: 5 },
+    semana: { segments: 5 },
+    mes: { segments: 5 },
     año: { segments: 5 }
 };
 
+// Normaliza cadenas de fecha en distintos formatos a un objeto Date UTC
+function parseFechaBase(value) {
+    if (!value) return null;
+    const isoMatch = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (isoMatch) {
+        const [, y, m, d] = isoMatch;
+        return new Date(Date.UTC(Number(y), Number(m) - 1, Number(d)));
+    }
+    const localMatch = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (localMatch) {
+        const [, d, m, y] = localMatch;
+        return new Date(Date.UTC(Number(y), Number(m) - 1, Number(d)));
+    }
+    const parsed = Date.parse(value);
+    if (!Number.isNaN(parsed)) return new Date(parsed);
+    return null;
+}
+
+// Ajusta la fecha a los límites válidos del periodo solicitado (día, semana, mes, año)
 function alignToPeriod(date, rango) {
     const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
     switch (rango) {
@@ -33,7 +52,8 @@ function alignToPeriod(date, rango) {
     }
 }
 
-function addPeriod(date, rango, amount) {
+// Suma periodos completos (días, semanas, meses, años) respetando UTC
+function addPeriod(date, amount, rango) {
     const d = new Date(date.getTime());
     switch (rango) {
         case 'semana':
@@ -53,6 +73,7 @@ function addPeriod(date, rango, amount) {
     return d;
 }
 
+// Devuelve una etiqueta legible para el periodo que alimenta la UI
 function formatPeriod(date, rango) {
     const year = date.getUTCFullYear();
     const month = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -73,6 +94,7 @@ function formatPeriod(date, rango) {
     }
 }
 
+// Calcula el número de semana ISO para una fecha determinada
 function getWeekNumber(date) {
     const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
     const dayNum = d.getUTCDay() || 7;
@@ -81,42 +103,51 @@ function getWeekNumber(date) {
     return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 }
 
+// Convierte valores almacenados en movimientos a Date consistente (timestamp o texto)
+function parseMovimientoFecha(value) {
+    if (value === null || value === undefined) return null;
+    if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
+
+    const tryNumeric = (raw) => {
+        if (raw === null || raw === undefined) return null;
+        const num = Number(raw);
+        if (Number.isNaN(num)) return null;
+        const isSeconds = Math.abs(num) < 1e12;
+        return new Date(isSeconds ? num * 1000 : num);
+    };
+
+    const numericDate = tryNumeric(value);
+    if (numericDate) return numericDate;
+
+    if (typeof value === 'string') {
+        const parsed = Date.parse(value);
+        if (!Number.isNaN(parsed)) return new Date(parsed);
+    }
+
+    return null;
+}
+
+// Construye timeline y totales de ventas para un rango solicitado por el cliente
 router.get('/', (req, res) => {
     const rango = req.query.rango || 'dia';
     const fechaBase = req.query.fechaBase;
     if (!fechaBase) return res.status(400).json({ error: 'Faltan parámetros' });
 
-    const baseDate = new Date(`${fechaBase}T00:00:00Z`);
-    if (isNaN(baseDate)) return res.status(400).json({ error: 'Fecha inválida' });
+    const baseDate = parseFechaBase(fechaBase);
+    if (!baseDate || isNaN(baseDate)) return res.status(400).json({ error: 'Fecha inválida' });
 
     const config = RANGE_CONFIG[rango] || RANGE_CONFIG.dia;
-    let start;
-    let end;
+    const alignedBase = alignToPeriod(baseDate, rango);
+    const start = addPeriod(alignedBase, -(config.segments - 1), rango);
+    const end = addPeriod(alignedBase, 1, rango);
     const timeline = [];
-
-    if (rango === 'dia') {
-        start = alignToPeriod(baseDate, 'semana');
-        end = addPeriod(start, config.segments, 'dia');
-        for (let i = 0; i < config.segments; i++) {
-            const dayStart = addPeriod(start, i, 'dia');
-            timeline.push({
-                label: formatPeriod(dayStart, 'dia'),
-                start: dayStart,
-                end: addPeriod(dayStart, 1, 'dia')
-            });
-        }
-    } else {
-        const alignedBase = alignToPeriod(baseDate, rango);
-        start = addPeriod(alignedBase, -(config.segments - 1), rango);
-        end = addPeriod(alignedBase, 1, rango);
-        for (let i = 0; i < config.segments; i++) {
-            const periodStart = addPeriod(start, i, rango);
-            timeline.push({
-                label: formatPeriod(periodStart, rango),
-                start: periodStart,
-                end: addPeriod(periodStart, 1, rango)
-            });
-        }
+    for (let i = 0; i < config.segments; i++) {
+        const periodStart = addPeriod(start, i, rango);
+        timeline.push({
+            label: formatPeriod(periodStart, rango),
+            start: periodStart,
+            end: addPeriod(periodStart, 1, rango)
+        });
     }
 
     const startTs = Math.floor(start.getTime() / 1000);
@@ -137,8 +168,9 @@ router.get('/', (req, res) => {
         const periodoMap = new Map();
         const productoMap = new Map();
         rows.forEach(row => {
-            const fecha = new Date((row.fecha || 0) * 1000);
-            const periodo = formatPeriod(alignToPeriod(fecha, rango), rango);
+            const fechaMovimiento = parseMovimientoFecha(row.fecha);
+            if (!fechaMovimiento) return;
+            const periodo = formatPeriod(alignToPeriod(fechaMovimiento, rango), rango);
             const key = `${periodo}-${row.producto_id}`;
             if (!detalleMap.has(key)) {
                 detalleMap.set(key, {

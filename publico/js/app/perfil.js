@@ -42,6 +42,9 @@ function guardarPerfil() {
 
 window.guardarPerfil = guardarPerfil;
 
+/**
+ * Recupera los datos del usuario autenticado y rellena los campos del panel de perfil.
+ */
 window.cargarPerfil = async function cargarPerfil() {
     const currentUser = localStorage.getItem('usuarioActivo');
     if (!currentUser) return;
@@ -79,4 +82,3 @@ window.cargarPerfil = async function cargarPerfil() {
         console.error('Error cargando perfil:', err);
     }
 };
-

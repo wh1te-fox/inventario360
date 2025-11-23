@@ -3,94 +3,202 @@
    =============================== */
 
 @media (max-width: 768px) {
-    .contenedor-app { flex-direction: column; }
-    .sidebar { width: 100%; position: relative; padding: 10px; font-size: 16px; }
+    .contenedor-app {
+        flex-direction: column; /* Apila sidebar y contenido en vertical */
+    }
+    .sidebar {
+        width: 100%; /* Barra ocupa todo el ancho */
+        position: relative; /* Deja de ser fija */
+        padding: 10px; /* Reduce relleno */
+        font-size: 16px; /* Aumenta legibilidad */
+    }
     .sidebar nav ul {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        padding: 10px;
+        display: flex; /* Navegación en fila flexible */
+        flex-wrap: wrap; /* Permite saltar de línea */
+        justify-content: space-around; /* Reparte los ítems */
+        padding: 10px; /* Relleno interno uniforme */
     }
     .sidebar nav ul li,
-    .sidebar nav ul label { margin: 5px; font-size: 14px; }
-    .contenido { width: 100%; padding: 10px; }
-    table { width: 100%; font-size: 14px; border-collapse: collapse; }
-    th, td { padding: 6px; text-align: left; }
-    .sidebar > div { display: none; }
+    .sidebar nav ul label {
+        margin: 5px; /* Espacio entre ítems */
+        font-size: 14px; /* Texto ligeramente más pequeño */
+    }
+    .contenido {
+        width: 100%; /* Contenido ocupa ancho completo */
+        padding: 10px; /* Menos margen para pantallas pequeñas */
+    }
+    table {
+        width: 100%; /* Tablas responden al ancho reducido */
+        font-size: 14px; /* Texto compacto */
+        border-collapse: collapse; /* Quita espacios extra entre celdas */
+    }
+    th, td {
+        padding: 6px; /* Ajusta relleno */
+        text-align: left; /* Mantiene alineación legible */
+    }
+    .sidebar > div {
+        display: none; /* Oculta widgets extra en mobile */
+    }
 
 }
 
 .contenedor-app {
-    display: flex;
-    height: 100vh;
-    font-family: 'Times New Roman', Times, serif;
+    display: flex; /* Lado izquierdo (sidebar) y contenido en fila */
+    height: 100vh; /* Ocupa toda la altura disponible */
+    font-family: 'Times New Roman', Times, serif; /* Estética clásica solicitada */
 }
 
 .sidebar {
-    text-align: left;
-    width: 220px;
-    background: linear-gradient(180deg,#2c284d 0%, #382a53 100%);
-    color: #fff;
-    padding: 26px 18px;
-    position: fixed;
-    height: 100%;
-    overflow-y: auto;
-    box-shadow: 2px 0 8px rgba(44,40,77,0.12);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    text-align: left; /* Alinea texto al inicio */
+    width: 220px; /* Ancho fijo de la barra */
+    background: linear-gradient(180deg,#2c284d 0%, #382a53 100%); /* Degradado morado */
+    color: #fff; /* Texto blanco para contraste */
+    padding: 26px 18px; /* Relleno interno */
+    position: fixed; /* Permanece visible al hacer scroll */
+    height: 100%; /* Ocupa todo el alto */
+    overflow-y: auto; /* Scroll si el contenido crece */
+    box-shadow: 2px 0 8px rgba(44,40,77,0.12); /* Sombra lateral */
+    display: flex; /* Permite apilar secciones internas */
+    flex-direction: column; /* Orden vertical */
+    gap: 12px; /* Separación entre bloques */
 }
-.sidebar .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
-.sidebar .brand img{ height:36px; width:auto }
-.sidebar .brand .title { font-weight:700; font-size:18px; color: #fff }
-.sidebar ul { list-style: none; padding: 0; margin-top: 6px; flex: 1; }
-.sidebar .perfil { display:flex; align-items:center; gap:10px; padding: 12px 6px; }
-.sidebar .perfil img{ width:72px; height:72px; border-radius:8px; object-fit:cover; border:4px solid #9b59ff; }
-.sidebar .perfil .meta{ color: #f3eefe; font-size:13px }
-.sidebar li { padding: 12px 10px; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 10px; color: #fff; transition: background .12s, transform .06s; }
-.sidebar li .icon { opacity: 0.95 }
-.sidebar li:hover { background: rgba(255,255,255,0.06); transform: translateX(4px); }
-.sidebar li.active { background: linear-gradient(90deg, rgba(155,89,255,0.14), rgba(155,89,255,0.06)); box-shadow: inset 3px 0 0 #9b59ff; }
-.sidebar .logout-btn{ border: 1px solid rgba(255,255,255,0.12); background: transparent; color: #fff; padding: 8px 10px; border-radius: 14px; cursor: pointer; align-self: stretch; }
-.sidebar .logout-btn:hover{ background: rgba(255,255,255,0.04) }
+.sidebar .brand {
+    display: flex; /* Logo + texto en fila */
+    align-items: center; /* Centra verticalmente */
+    gap: 10px; /* Espacio entre logo y título */
+    margin-bottom: 18px; /* Distancia respecto al menú */
+}
+.sidebar .brand img{
+    height:36px; /* Logo compacto */
+    width:auto; /* Conserva proporción */
+}
+.sidebar .brand .title {
+    font-weight:700; /* Título en negrita */
+    font-size:18px; /* Tamaño destacado */
+    color: #fff; /* Mantiene contraste */
+}
+.sidebar ul {
+    list-style: none; /* Quita viñetas */
+    padding: 0; /* Elimina relleno */
+    margin-top: 6px; /* Separación respecto a la cabecera */
+    flex: 1; /* Ocupa el espacio restante del sidebar */
+}
+
+.sidebar .perfil { 
+    display:flex; /* Foto y datos alineados en fila */
+    align-items:center; /* Centra verticalmente */
+    gap:10px; /* Espacio entre elementos */
+    padding: 12px 6px; /* Relleno interno discreto */
+}
+
+.sidebar .perfil img{
+    width:72px; /* Avatar cuadrado */
+    height:72px;
+    border-radius:8px; /* Bordes redondeados */
+    object-fit:cover; /* Recorta para llenar el contenedor */
+    border:4px solid #9b59ff; /* Marco púrpura */
+}
+.sidebar .perfil .meta{
+    color: #f3eefe; /* Texto claro */
+    font-size:13px; /* Tamaño pequeño */
+}
+.sidebar li {
+    padding: 12px 10px; /* Área clicable amplia */
+    cursor: pointer; /* Señala interactividad */
+    border-radius: 8px; /* Suaviza cada item */
+    display: flex; /* Ícono + texto alineados */
+    align-items: center; /* Centrado vertical */
+    gap: 10px; /* Espacio entre icono y label */
+    color: #fff; /* Texto blanco */
+    transition: background .12s, transform .06s; /* Feedback rápido */
+}
+.sidebar li .icon {
+    opacity: 0.95; /* Ícono ligeramente translúcido */
+}
+.sidebar li:hover {
+    background: rgba(255,255,255,0.06); /* Resalta fila */
+    transform: translateX(4px); /* Desplaza hacia la derecha */
+}
+.sidebar li.active {
+    background: linear-gradient(90deg, rgba(155,89,255,0.14), rgba(155,89,255,0.06)); /* Filtro púrpura */
+    box-shadow: inset 3px 0 0 #9b59ff; /* Barra lateral indicadora */
+}
+.sidebar .logout-btn{
+    border: 1px solid rgba(255,255,255,0.12); /* Contorno tenue */
+    background: transparent; /* Sin relleno */
+    color: #fff;
+    padding: 8px 10px; /* Espacio para pulsar */
+    border-radius: 14px; /* Botón redondeado */
+    cursor: pointer;
+    align-self: stretch; /* Se expande al ancho disponible */
+}
+.sidebar .logout-btn:hover{
+    background: rgba(255,255,255,0.04); /* Resalta con velo claro */
+}
 
 .contenido {
-    margin-left: 220px;
-    padding: 40px;
-    flex: 1;
-    background-color: #f4f4f4;
-    overflow-y: auto;
-    min-height: 100vh;
+    margin-left: 220px; /* Compensa el ancho del sidebar fijo */
+    padding: 40px; /* Espacio alrededor del contenido */
+    flex: 1; /* Ocupa el resto del ancho */
+    background-color: #f4f4f4; /* Mismo fondo que body */
+    overflow-y: auto; /* Permite scroll interno */
+    min-height: 100vh; /* Garantiza altura completa */
 }
 
 .nav-item.perfil-nav{
-    background: rgba(255,255,255,0.08);
-    border-radius: 16px;
-    padding: 10px;
-    margin-bottom: 12px;
-    transition: background .12s, transform .06s;
+    background: rgba(255,255,255,0.08); /* Tarjeta translúcida */
+    border-radius: 16px; /* Esquinas suaves */
+    padding: 10px; /* Relleno uniforme */
+    margin-bottom: 12px; /* Separación entre items */
+    transition: background .12s, transform .06s; /* Feedback de interacción */
 }
 .nav-item.perfil-nav img{
     width: 54px;
     height: 54px;
     border-radius: 14px;
     object-fit: cover;
-    border: 3px solid rgba(255,255,255,0.35);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    border: 3px solid rgba(255,255,255,0.35); /* Borde claro */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25); /* Sombra que resalta la miniatura */
 }
-.perfil-nav-text{ display: flex; flex-direction: column; line-height: 1.2; }
-.perfil-nav-label{ font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.65); }
-.perfil-nav #topbarNombre{ font-size: 15px; color: #fff; }
+.perfil-nav-text{ 
+    display: flex; /* Nombre + rol apilados */
+    flex-direction: column;
+    line-height: 1.2; /* Espaciado compacto */
+}
 
-section{ color: #4752ae; }
-section button{ background-color: #fea43f; color: #4752ae; border: none; padding: 10px 15px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-section button:hover { background-color: #4752ae; color: #fea43f; }
+.perfil-nav-label{
+    font-size: 11px; /* Texto pequeño */
+    letter-spacing: 0.08em; /* Aumenta el espaciado entre letras */
+    text-transform: uppercase; /* Formato etiqueta */
+    color: rgba(255,255,255,0.65); /* Color tenue */
+}
+
+section{
+    color: #4752ae; /* Texto en azul violeta */
+}
+section button{
+    background-color: #fea43f; /* Botón naranja */
+    color: #4752ae; /* Texto azul */
+    border: none; /* Sin borde clásico */
+    padding: 10px 15px; /* Relleno estándar */
+    font-weight: bold; /* Destaca la acción */
+    cursor: pointer; /* Indica click */
+    border-radius: 5px; /* Esquinas suaves */
+}
+section button:hover {
+    background-color: #4752ae; /* Invierte colores al pasar el cursor */
+    color: #fea43f;
+}
 section h2{
-    font-family: var(--font-heading);
-    font-size: 36px;
-    color: var(--color-primary);
-    margin-bottom: 14px;
+    font-family: var(--font-heading); /* Usa la serif elegante */
+    font-size: 36px; /* Título grande */
+    color: var(--color-primary); /* Morado oscuro */
+    margin-bottom: 14px; /* Espacio respecto al contenido */
 }
 
-.modulo { display: none; }
-.modulo.activo { display: block; }
+.modulo {
+    display: none; /* Oculta módulos por defecto */
+}
+.modulo.activo {
+    display: block; /* Sólo muestra el módulo activo */
+}

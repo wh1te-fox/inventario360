@@ -1,6 +1,6 @@
-# Documentación funcional de Inventario360
+# Documentación funcional y de estilos de Inventario360
 
-Este resumen explica, en español, qué hace cada archivo principal, las funciones exportadas y la responsabilidad de cada bloque de código. Puedes usarlo como mapa rápido para localizar la lógica que necesites ajustar.
+Este documento resume la responsabilidad de cada archivo principal (frontend, backend y CSS) y detalla cómo están organizados los estilos. Úsalo como mapa rápido antes de tocar código.
 
 ## 1. Frontend (carpeta `publico/`)
 
@@ -57,16 +57,17 @@ Este resumen explica, en español, qué hace cada archivo principal, las funcion
 - `abrirModalGasto()` / `guardarGasto()`: flujo para registrar movimientos tipo gasto vinculados a proveedores.
 
 ### 1.10 `publico/js/app/movimientos.js`
-- `ensureMovimientosFiltros()`: setea fecha/rango por defecto.
-- `loadMovimientos()` y `loadMovimientosUI({ applyDateFilter })`: consultas generales y filtradas.
-- `renderMovimientosTable(movimientos)`: construye la tabla.
-- `exportMovimientosCSV()`: genera un CSV con los movimientos cargados.
-- `loadStats()`: endpoint `/movimientos/estadisticas/resumen`, arma los gráficos Chart.js y recalcula precios estimados de productos.
-- `filtrarPorRango()`: helper del botón "Buscar".
+- `ensureMovimientosFiltros()`: fija fecha base y rango activo al cargar el módulo.
+- `loadMovimientos()` / `loadMovimientosUI({ applyDateFilter })`: consumen `/movimientos`, enviando `fechaBase` + `rango` (día, semana, mes, año). El backend devuelve ya filtrado el tramo solicitado.
+- `renderMovimientosTable(movimientos)`: agrupa los movimientos por periodo, imprime la fila resumen (ingresos, egresos, neto) y, debajo, los renglones detallados. Soporta fechas almacenadas como epoch (segundos o milisegundos) y cadenas ISO.
+- `cambiarRangoMovimientos()` / `seleccionarRangoMovimientos(rango)`: sincronizan el chip "Vista ..." y la etiqueta bajo el título para dejar claro en qué escala se ve la tabla.
+- `exportMovimientosCSV()`: descarga lo que esté en memoria.
+- `loadStats()`: sigue entregando datos para el dashboard rápido.
+- `filtrarPorRango()`: botón que re-dispara `loadMovimientosUI` con los filtros actuales.
 
 ### 1.11 `publico/js/app/estadisticas.js`
-- `ensureEstadisticasFiltros()`: fecha/rango base.
-- `filtrarEstadisticas()`: consulta `/estadisticas?rango=...`, llena la tabla detallada, totales rápidos y vuelve a dibujar ambos gráficos.
+- `ensureEstadisticasFiltros()`: prepara los inputs.
+- `filtrarEstadisticas()`: llama al backend, pinta tabla, totales y gráficos. Se añadió `formatPeriodoLabel()` para mostrar etiquetas legibles (ej. `18/11` o `Sem 47 2025`).
 
 ### 1.12 `publico/js/app/clientes.js`
 - Cache `_clientesCache` y `loadClientes()` que consume `/clientes`, renderiza tabla y resumen.
@@ -121,13 +122,43 @@ Este resumen explica, en español, qué hace cada archivo principal, las funcion
 - `routes/usuarios.js`: monta endpoints de registro/login (delegados al controlador), recuperación con tokens (`solicitar-recuperacion`, `confirmar-recuperacion`), debug (`/debug/list`, `/debug/test-write`) y el CRUD del perfil (incluida la subida de foto usando dataURL -> archivo en `publico/uploads`).
 - `routes/categorias.js`: CRUD básico para categorías (GET/POST/PUT/DELETE) usando la tabla `categorias`.
 - `routes/productos.js`: CRUD completo con soporte para guardar imágenes base64 en `/uploads` y actualizar campos parcial o completamente.
-- `routes/movimientos.js`: registra movimientos según tipo (`venta`, `egreso`, `gasto`, `ajuste`), actualiza stock cuando aplica, lista movimientos con filtros y expone `/movimientos/estadisticas/resumen` para alimentar Chart.js.
+- `routes/movimientos.js`: además del CRUD de movimientos, ahora acepta `fechaBase` + `rango` para devolver sólo el tramo solicitado. El helper interno alinea la fecha al inicio del periodo (día, semana ISO, mes o año) y convierte cualquier formato de fecha almacenado en segundos/milisegundos.
 - `routes/estadisticas.js`: recibe `rango` + `fechaBase`, agrupa las ventas por periodo y producto, entrega totales (`total_unidades`, `total_monto`, `total_costo`).
 - `routes/clientes.js`: CRUD de clientes + resumen (`totalClientes`, `totalPorCobrar`) calculado desde la tabla de movimientos.
 - `routes/proveedores.js`: CRUD de proveedores + resumen (`totalProveedores`, `totalPorPagar`) con base en movimientos tipo gasto/egreso.
 
-## 3. Hojas de estilo (`publico/stilos/appstyles.css`)
-- El archivo ahora está dividido por secciones con comentarios en español. Cada bloque declara el módulo al que afecta (Inventario, Ventas, Estadísticas, Perfil, etc.), los componentes reutilizables (tablas, modales) y los ajustes responsivos. Consulta los encabezados `/* === Sección X: ... === */` para ubicar rápidamente dónde editar.
+## 3. Estilos CSS
+
+Aunque la SPA carga varias hojas, la mayoría de componentes terminan en `publico/stilos/appstyles.css`, organizada por secciones. Guía rápida:
+
+1. **Globals/Layout** (`stilos/globals.css` y `stilos/layout.css`)
+  - Variables CSS (`--color-primary`, `--font-heading`, etc.), reset y grillas base.
+  - `layout.css` define el `aside.sidebar`, `main.contenido`, media queries para colapsar la barra lateral y la clase `modulo--full` que permite que una sección ocupe todo el ancho/alto del viewport.
+
+2. **Inventario (`stilos/inventario.css`)**
+  - Hero superior (`inventario-hero`), buscadores, resumen y tabla con encabezado pegajoso. Las clases `inventario-tabla-wrapper` y `.inventario-tabla-scroll` controlan el scroll independiente sin mover el encabezado.
+
+3. **Ventas (`stilos/ventas.css`)**
+  - Define los paneles a dos columnas (`ventas-panel--catalogo` / `--cart`), los chips de categoría, toggles de pago (`ventas-pago-btn`) y la canasta en tarjetas.
+
+4. **Movimientos (Sección 10 en `appstyles.css`)
+  - `movimientos-card` aplica el gradiente morado, bordes redondeados y sticky header.
+  - `mov-pill-chip-group`, `mov-chip`, `mov-pill` controlan los botones tipo pastilla (filtros rápidos, pestañas Ingresos/Egresos).
+  - `mov-vista-actual` muestra el rango seleccionado, mientras `mov-periodo-row` y `mov-periodo-resumen` pintan las filas agrupadas y sus totales.
+  - La tabla usa `.movimientos-tabla-scroll` para permitir scroll interno con header fijo (`position: sticky`).
+
+5. **Modales / componentes reutilizables**
+  - Bloque "Componentes reutilizables" define estilos genéricos de tablas (`.tabla-wrapper`), cabeceras fijas con `position: sticky`, y la ventana modal (`.modal`, `.modal-content`).
+
+6. **Estadísticas (Sección 11 en `appstyles.css`)
+  - `stats-card` es un contenedor flex vertical. Secciones internas (`.stats-heading-block`, `.stats-content-block`) reparten el espacio: la cabecera ocupa ~10 % y la zona de visualización aprovecha el resto.
+  - `metric-card`, `stats-filter-card` y `stats-charts-row` controlan cards, filtros y responsive grid de gráficas.
+  - `.stats-table .tabla-wrapper` mantiene alturas máximas y scroll sin perder el estilo del mockup.
+
+7. **Perfil y otros bloques**
+  - Secciones posteriores (Perfil, Ajustes, Clientes, etc.) siguen el patrón: tarjeta clara, bordes redondeados y tipografía `var(--font-heading)` para títulos.
+
+> **Consejo:** cada bloque en `appstyles.css` abre con un comentario `/* === Sección X: ... === */`. Busca ahí para modificar estilos de un módulo sin perderte.
 
 ## 4. Flujo general
 1. El usuario ingresa por `login.html`, que valida campos con `validaciodecampos.js` y consume `/usuarios/login`.

@@ -6,6 +6,7 @@
 
 // --- Importar módulos principales ---
 // Cargado de módulos de forma dinámica y con manejo de errores
+// Función que importa los módulos del dashboard, valida sesión y muestra el módulo inicial.
 async function bootstrap() {
   try {
       // Modal y navegación deben inicializarse antes que el resto de módulos
@@ -62,6 +63,7 @@ async function bootstrap() {
     }
 
     // Helper para activar/desactivar desde la consola
+    // Función utilitaria para activar o desactivar el modo sin autenticación desde la consola.
     window.setDevSkipAuth = function(enable) {
       try {
         if (enable) {
@@ -95,9 +97,11 @@ async function bootstrap() {
 }
 
 // Manejo global de errores para facilitar debug en consola
+// Callback que captura excepciones no controladas y las registra con detalles.
 window.addEventListener('error', (e) => {
   console.error('Unhandled error event:', e.error || e.message, e.filename || '');
 });
+// Callback que informa rechazos de promesas no capturados para depuración temprana.
 window.addEventListener('unhandledrejection', (e) => {
   console.error('Unhandled promise rejection:', e.reason);
 });

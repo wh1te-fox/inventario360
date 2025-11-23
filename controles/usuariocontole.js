@@ -2,6 +2,7 @@ const db = require('../db');
 const bcrypt = require('bcryptjs');
 
 // iniciar sesion (seguro: compara hash)
+// Controlador que verifica credenciales contra la tabla usuarios y responde con info básica.
 exports.iniciarSesion = (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
@@ -20,6 +21,7 @@ exports.iniciarSesion = (req, res) => {
 };
 
 // registrar usuarios (hashea la contraseña)
+// Controlador que crea un usuario nuevo, valida duplicados y devuelve el registro sin password.
 exports.registrarUsuario = (req, res) => {
     const { username, password, email, telefono } = req.body;
     console.log('RegistrarUsuario -> body:', { username, email, telefono });

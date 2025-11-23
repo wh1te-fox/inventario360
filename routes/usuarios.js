@@ -24,7 +24,7 @@ router.post('/registro', validarRegistro, usuarioController.registrarUsuario);
 // Delegar inicio de sesión al controlador (manejo de bcrypt y respuesta)
 router.post('/login', validarLogin, usuarioController.iniciarSesion);
 
-// Solicitar recuperación con token de seguridad
+// Genera token temporal y envía correo con enlace de recuperación
 router.post('/solicitar-recuperacion', (req, res) => {
   const { email } = req.body;
   const token = (require('crypto')).randomBytes(32).toString('hex');
@@ -61,7 +61,7 @@ router.post('/solicitar-recuperacion', (req, res) => {
   );
 });
 
-// confirmar recuperación de contraseña
+// Valida el token recibido y actualiza la contraseña con un hash nuevo
 router.post('/confirmar-recuperacion', (req, res) => {
   const { token, nuevaContraseña } = req.body;
 
@@ -79,7 +79,7 @@ router.post('/confirmar-recuperacion', (req, res) => {
   });
 });
 
-// Ruta de depuración (temporal) para listar usuarios sin exponer hashes.
+// Lista usuarios con datos básicos para verificar contenido de la BD sin exponer contraseñas
 router.get('/debug/list', (req, res) => {
   db.all('SELECT id, username, email, telefono, nombre, direccion, ciudad, pais, codigo_postal, detalles, foto_url FROM usuarios', [], (err, rows) => {
     console.log('/usuarios/debug/list err:', err);
@@ -89,7 +89,7 @@ router.get('/debug/list', (req, res) => {
   });
 });
 
-// Ruta de prueba: intenta insertar un usuario temporal y lo borra (útil para comprobar permisos/DB)
+// Inserta usuario temporal para comprobar permisos de escritura y luego lo elimina
 router.get('/debug/test-write', (req, res) => {
   const testUser = `test_${Date.now()}`;
   const bcrypt = require('bcryptjs');
@@ -112,7 +112,7 @@ router.get('/debug/test-write', (req, res) => {
   });
 });
 
-// Obtener datos de perfil por username (sin devolver password)
+// Devuelve información de perfil filtrada por username sin exponer password
 router.get('/perfil/:username', (req, res) => {
   const username = req.params.username;
   db.get('SELECT id, username, email, telefono, nombre, direccion, ciudad, pais, codigo_postal, detalles, foto_url FROM usuarios WHERE username = ?', [username], (err, row) => {
@@ -125,7 +125,7 @@ router.get('/perfil/:username', (req, res) => {
   });
 });
 
-// Actualizar perfil de usuario
+// Actualiza datos de contacto/dirección del usuario y devuelve el registro actualizado
 router.put('/perfil/:username', (req, res) => {
   const username = req.params.username;
   const { nombre, direccion, ciudad, pais, codigo_postal, detalles, email, telefono } = req.body;
@@ -149,6 +149,7 @@ router.put('/perfil/:username', (req, res) => {
 const fs = require('fs');
 const path = require('path');
 
+// Persiste una imagen en base64 como archivo físico y guarda la ruta pública en la BD
 router.post('/perfil/:username/foto', (req, res) => {
   const username = req.params.username;
   const { dataUrl } = req.body;

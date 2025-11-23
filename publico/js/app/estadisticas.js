@@ -4,6 +4,23 @@
 const STATS_COLOR_SWATCH = ['#6fd4e9', '#7cb5ff', '#6c5ce7', '#8f53ff', '#c47dff', '#f19bff'];
 const buildStatsPalette = (len) => Array.from({ length: len }, (_, i) => STATS_COLOR_SWATCH[i % STATS_COLOR_SWATCH.length]);
 
+// Función que resume el inventario para el gráfico de pastel, calculando costo total por producto.
+function aggregateInventario(raw = {}) {
+    const productos = Array.isArray(raw.productos) ? raw.productos : (Array.isArray(raw) ? raw : []);
+    const mapped = productos.map(prod => {
+        const unidades = Number(prod.existencia) || 0;
+        const costoUnitario = Number(prod.costo != null ? prod.costo : prod.precio) || 0;
+        const costoTotal = unidades * costoUnitario;
+        return {
+            id: prod.id,
+            nombre: prod.nombre || `Producto ${prod.id}`,
+            unidades,
+            costo_total: costoTotal
+        };
+    }).filter(item => item.unidades > 0 && item.costo_total >= 0);
+    return mapped.sort((a, b) => (b.costo_total || 0) - (a.costo_total || 0));
+}
+
 /**
  * Agrupa los datos por periodo (día, semana, mes, año) y acumula totales.
  */
@@ -53,6 +70,24 @@ function aggregateProductos(resumen = []) {
     return Array.from(map.values()).sort((a, b) => (b.total_monto || 0) - (a.total_monto || 0));
 }
 
+// Función que adapta la etiqueta del periodo a un formato abreviado según el rango seleccionado.
+function formatPeriodoLabel(raw = '', rango = 'dia') {
+    if (!raw) return '—';
+    if (rango === 'dia' && /^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        const [year, month, day] = raw.split('-');
+        return `${day}/${month}`;
+    }
+    if (rango === 'semana' && /^\d{4}-W\d{2}$/.test(raw)) {
+        const [yearPart, weekPart] = raw.split('-W');
+        return `Sem ${weekPart} ${yearPart}`;
+    }
+    if (rango === 'mes' && /^\d{4}-\d{2}$/.test(raw)) {
+        const [year, month] = raw.split('-');
+        return `${month}/${year}`;
+    }
+    return raw;
+}
+
 /**
  * Establece fecha y rango por defecto al cargar el módulo.
  */
@@ -97,9 +132,10 @@ window.filtrarEstadisticas = async function filtrarEstadisticas() {
         tbody.innerHTML = '';
         resumen.forEach(r => {
             const ganancia = (r.total_monto || 0) - (r.total_costo || 0);
+            const periodoLabel = formatPeriodoLabel(r.periodo, rango);
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${r.periodo}</td>
+                <td>${periodoLabel}</td>
                 <td>${r.nombre}</td>
                 <td>${r.total_unidades}</td>
                 <td>${r.precio_unitario?.toFixed(2) || '-'}</td>
@@ -121,7 +157,8 @@ window.filtrarEstadisticas = async function filtrarEstadisticas() {
         document.getElementById('productosVendidos').textContent = totalUnidades;
 
             // --- Gráfico de barras: ventas por periodo ---
-        const labels = periodos.map(p => p.periodo);
+        const rawLabels = periodos.map(p => p.periodo);
+        const labels = rawLabels.map(label => formatPeriodoLabel(label, rango));
         const montosActuales = periodos.map(p => p.total_monto || 0);
         const promedioHistorico = periodos.map((_, i) => {
         const subset = periodos.slice(0, i + 1);
@@ -184,13 +221,13 @@ window.filtrarEstadisticas = async function filtrarEstadisticas() {
 
         // --- Gráfico de pastel: distribución del capital invertido en inventario ---
         try {
-        const resInventario = await fetch('/inventario');
+        const resInventario = await fetch('/productos');
         if (!resInventario.ok) throw new Error('Error al cargar inventario');
         const inventario = await resInventario.json();
         const productosInventario = aggregateInventario(inventario);
 
-        const pieLabels = productosInventario.map(p => p.nombre);
-        const pieData = productosInventario.map(p => p.costo_total);
+        const pieLabels = productosInventario.length ? productosInventario.map(p => p.nombre) : ['Inventario'];
+        const pieData = productosInventario.length ? productosInventario.map(p => p.costo_total) : [0];
         const piePalette = buildStatsPalette(pieLabels.length || 1);
 
         const ctxPie = document.getElementById('salesPieChart').getContext('2d');
@@ -234,13 +271,16 @@ window.filtrarEstadisticas = async function filtrarEstadisticas() {
             }
             }
         });
+        } catch (errInventario) {
+            console.error('Error cargando inventario:', errInventario);
+        }
     } catch (err) {
         console.error('Error cargando estadísticas:', err);
         alert('Error al cargar estadísticas');
     }
 };
-
 // Carga automática al iniciar la página
+// Callback que dispara la carga inicial de estadísticas una vez preparada la interfaz.
 document.addEventListener('DOMContentLoaded', () => {
     try {
         window.ensureEstadisticasFiltros();

@@ -20,6 +20,9 @@ window.loadProveedores = async function loadProveedores() {
     }
 };
 
+/**
+ * Actualiza los contadores de proveedores y total pendiente en el encabezado del módulo.
+ */
 window.actualizarResumenProveedores = function actualizarResumenProveedores(resumen = {}) {
     const totalProvEl = document.getElementById('totalProveedoresResumen');
     const totalPagarEl = document.getElementById('totalPorPagarResumen');
@@ -117,7 +120,9 @@ window.agregarProveedor = async function agregarProveedor() {
     }
 };
 
-// Guardar proveedor desde modal con campos: nombre, telefono, direccion, correo
+/**
+ * Guarda un proveedor usando los campos completos del modal (nombre, teléfono, etc.).
+ */
 window.guardarProveedor = async function guardarProveedor() {
     const nombre = (document.getElementById('nombreProveedor') || {}).value || '';
     const telefono = (document.getElementById('telefonoProveedor') || {}).value || '';
