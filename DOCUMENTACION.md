@@ -153,6 +153,7 @@ Aunque la SPA carga varias hojas, la mayoría de componentes terminan en `public
 6. **Estadísticas (Sección 11 en `appstyles.css`)
   - `stats-card` es un contenedor flex vertical. Secciones internas (`.stats-heading-block`, `.stats-content-block`) reparten el espacio: la cabecera ocupa ~10 % y la zona de visualización aprovecha el resto.
   - `metric-card`, `stats-filter-card` y `stats-charts-row` controlan cards, filtros y responsive grid de gráficas.
+  
   - `.stats-table .tabla-wrapper` mantiene alturas máximas y scroll sin perder el estilo del mockup.
 
 7. **Perfil y otros bloques**
