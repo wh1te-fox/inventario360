@@ -12,10 +12,10 @@
 /* Tarjeta contenedora del módulo de movimientos */
 .movimientos-card {
   background: linear-gradient(180deg,#ffffff 0%, #f7f4ff 100%); /* Fondo degradado suave */
-  border-radius: 32px; /* Bordes amplios para look premium */
+  border-radius: 25px; /* Bordes amplios para look premium */
   border: 2px solid rgba(77,55,166,0.2); /* Borde púrpura translúcido */
   box-shadow: 0 18px 40px rgba(49,25,109,0.12); /* Sombra profunda */
-  padding: 28px; /* Espacio interior generoso */
+  padding: 20px; /* Espacio interior generoso */
   display: flex; /* Permite apilar secciones */
   flex-direction: column; /* Orden vertical */
   gap: 18px; /* Separación uniforme */
