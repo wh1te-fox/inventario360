@@ -62,6 +62,11 @@ inventario360.use((req, res, next) => {
 });
 
 // Rutas 
+
+inventario360.get('/', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'publico', 'inventario360.html'));
+});
+
 inventario360.get('/login', (_req, res) => {
     res.sendFile(path.join(__dirname, 'publico', 'login.html'));
 });
