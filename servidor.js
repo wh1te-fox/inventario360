@@ -4,7 +4,16 @@ const cors = require('cors');
 const inventario360 = express();
 const PORT = process.env.PORT || 3002; // puerto configurable por env
 // ALLOWED_ORIGINS puede ser una lista separada por comas (ej: https://midominio.com,http://localhost:3002)
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [`http://localhost:${PORT}`];
+const allowedList = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map(item => item.trim()).filter(Boolean) : [];
+const ALLOWED_ORIGINS = new Set([
+  ...allowedList,
+  `http://localhost:${PORT}`,
+  `http://127.0.0.1:${PORT}`,
+  `https://inventario360-production.up.railway.app`
+]);
+
+// Permite todos los orígenes si se configura explícitamente la variable
+const ALLOW_ALL_ORIGINS = String(process.env.ALLOW_ALL_ORIGINS || '').toLowerCase() === 'true';
 
 // --- HANDLERS GLOBALES PARA CAPTURAR ERRORES Y DIAGNOSTICAR DEBUGGER ---
 process.on('uncaughtException', (err) => {
@@ -33,17 +42,27 @@ inventario360.use(express.static(path.join(__dirname,'publico')));
 // Esto hace la experiencia de desarrollo más flexible (localhost, 127.0.0.1, y el origin configurado).
 inventario360.use(cors({
     origin: function (origin, callback) {
-        // allow requests with no origin (like mobile apps, curl, postman)
+        // allow requests with no origin (mobile apps, curl, postman, server-to-server)
         if (!origin) return callback(null, true);
+
+        if (ALLOW_ALL_ORIGINS) {
+            return callback(null, true);
+        }
+
+        // Orígenes explícitos permitidos en ALLOWED_ORIGINS
+        if (ALLOWED_ORIGINS.has(origin)) return callback(null, true);
+
+        // permitir localhost y 127.0.0.1 en desarrollo directo.
         try {
             const u = new URL(origin);
             const hostname = u.hostname;
-            // permitir localhost y 127.0.0.1 en desarrollo
             if (hostname === 'localhost' || hostname === '127.0.0.1') return callback(null, true);
         } catch (e) {
-            // si origin no es parseable, no bloquear de inmediato
+            // si origin no es parseable, no bloquear de inmediato (fallback)
+            return callback(null, true);
         }
-        if (ALLOWED_ORIGINS.indexOf(origin) !== -1) return callback(null, true);
+
+        console.warn('CORS origin no permitido:', origin, 'Lista aceptada:', Array.from(ALLOWED_ORIGINS));
         return callback(new Error('Origen no permitido por CORS'));
     }
 }));
@@ -62,7 +81,7 @@ inventario360.use((req, res, next) => {
 });
 
 // Rutas 
-
+console.log('ALLOWED_ORIGINS:', process.env.ALLOWED_ORIGINS);
 inventario360.get('/', (_req, res) => {
     res.sendFile(path.join(__dirname, 'publico', 'inventario360.html'));
 });
