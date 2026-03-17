@@ -1,10 +1,14 @@
 const mysql = require('mysql2/promise');
 
-const MYSQL_HOST = process.env.MYSQL_HOST || '127.0.0.1';
-const MYSQL_PORT = process.env.MYSQL_PORT ? Number(process.env.MYSQL_PORT) : 3306;
-const MYSQL_USER = process.env.MYSQL_USER || 'root';
-const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD || '';
-const MYSQL_DATABASE = process.env.MYSQL_DATABASE || 'inventario360';
+const MYSQL_HOST = process.env.MYSQL_HOST || process.env.MYSQLHOST || process.env.DB_HOST || process.env.MYSQL_HOSTNAME;
+const MYSQL_PORT = process.env.MYSQL_PORT ? Number(process.env.MYSQL_PORT) : (process.env.MYSQLPORT ? Number(process.env.MYSQLPORT) : undefined);
+const MYSQL_USER = process.env.MYSQL_USER || process.env.MYSQLUSER || process.env.MYSQL_ROOT_USER || process.env.MYSQLUSERNAME;
+const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD || process.env.MYSQL_ROOT_PASSWORD || process.env.MYSQLPWORD;
+const MYSQL_DATABASE = process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || process.env.MYSQL_DB;
+
+if (!MYSQL_HOST || !MYSQL_PORT || !MYSQL_USER || !MYSQL_DATABASE) {
+    throw new Error('Faltan variables de entorno de MySQL: MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_DATABASE (verifica que estén correctas)');
+}
 
 // Función que crea la base de datos (si no existe) antes de levantar el pool de conexiones.
 async function ensureDatabaseExists() {
